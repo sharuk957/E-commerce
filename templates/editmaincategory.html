@@ -1,0 +1,43 @@
+{% extends 'dashboard.html' %} {% block content %}
+<section class="content-main">
+    <div class="content-header">
+        <h2 class="content-title">Categories</h2>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <form action="{% url 'category_edit' data.pk %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Name</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="category_name" required value="{{data.category_name}}" id="product_name" />
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_slug" class="form-label">Slug</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="category_slug" required value="{{data.slug}}" id="product_slug" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" name="category_desc" required rows="4">{{data.description}}</textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary">submit</button>
+                        </div>
+                    </form>
+                    {% if messages %} {% for message in messages %} {% if message.tags == "success" %}
+                    <div class="alert alert-success">{{ message }}</div>
+                    {% elif message.tags == "error" %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                    {% endif %} {% endfor %} {% endif %}
+                </div>
+            </div>
+            <!-- .row // -->
+        </div>
+        <!-- card body .// -->
+    </div>
+    <!-- card .// -->
+</section>
+<!-- content-main end// -->
+{% endblock %}

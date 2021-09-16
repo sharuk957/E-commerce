@@ -1,0 +1,59 @@
+{% extends 'dashboard.html' %} {% block content %}
+<section class="content-main">
+    <div class="content-header">
+        <h2 class="content-title">Brands</h2>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <form action="{% url 'brand_edit' brand_data.pk %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Brand name</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="brand_name" value="{{brand_data.brand_name}}" id="product_name" required/>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" name="category">
+                                {% for category in category_data %}
+                                {% if data.category.category_name == category.category_name %}
+                                    <option selected> {{ category.category_name }} </option>
+                                {% else %}
+                                    <option> {{ category.category_name }} </option>
+                                {% endif %}
+                                {% endfor %}
+                                   </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">sub Category</label>
+                            <select class="form-select" name="sub_category">
+                                   {% for sub_category in data %}
+                                        <option> {{ sub_category.sub_category_name }} </option>
+                                   {% endfor %}
+                                   </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_slug" class="form-label">Slug</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="brand_slug" value="{{brand_data.slug}}" id="product_slug" required/>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- .row // -->
+        </div>
+        <!-- card body .// -->
+    </div>
+    <!-- card .// -->
+    {% if messages %} {% for message in messages %} {% if message.tags == "success" %}
+    <div class="alert alert-success">{{ message }}</div>
+    {% elif message.tags == "error" %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endif %} {% endfor %} {% endif %}
+</section>
+<!-- content-main end// -->
+{% endblock %}

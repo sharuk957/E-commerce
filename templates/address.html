@@ -1,0 +1,143 @@
+{% extends 'login.html' %} {% load static %} {% block content %}
+<div class="breadcrumb-area bg-gray">
+    <div class="container">
+        <div class="breadcrumb-content text-center">
+            <ul>
+                <li>
+                    <a href="{% url 'home' %}">Home</a>
+                </li>
+                <li>
+                    <a href="{% url 'checkout' %}">Checkout</a>
+                </li>
+                <li class="active">Address </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="checkout-main-area pt-120 pb-120">
+    <div class="container">
+        <!-- <div class="customer-zone mb-20">
+            <p class="cart-page-title">Returning customer? <a class="checkout-click1" href="#">Click here to login</a></p>
+            <div class="checkout-login-info">
+                <p>If you have shopped with us before, please enter your details in the boxes below. If you are a new customer, please proceed to the Billing & Shipping section.</p>
+                <form action="#">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="sin-checkout-login">
+                                <label>Username or email address <span>*</span></label>
+                                <input type="text" name="user-name">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="sin-checkout-login">
+                                <label>Passwords <span>*</span></label>
+                                <input type="password" name="user-password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-remember-wrap">
+                        <button class="button" type="submit">Login</button>
+                        <div class="checkout-login-toggle-btn">
+                            <input type="checkbox">
+                            <label>Remember me</label>
+                        </div>
+                    </div>
+                    <div class="lost-password">
+                        <a href="#">Lost your password?</a>
+                    </div>
+                </form> -->
+        <!-- <div class="checkout-login-social">
+                    <span>Login with:</span>
+                    <ul>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Google</a></li>
+                    </ul>
+                 </div> -->
+        <!-- </div>
+        </div> -->
+        <!-- <div class="customer-zone mb-20">
+                    <p class="cart-page-title">Have a coupon? <a class="checkout-click3" href="#">Click here to enter your code</a></p>
+                    <div class="checkout-login-info3">
+                        <form action="#">
+                            <input type="text" placeholder="Coupon code">
+                            <input type="submit" value="Apply Coupon">
+                        </form>
+                    </div>
+                </div> -->
+        <div class="checkout-wrap pt-30">
+            <div class="row">
+                <form action="{% url 'add_address' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="col-lg-7">
+
+                        <div class="billing-info-wrap mr-50">
+                            <h3>Shipping Details</h3>
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="billing-info mb-20">
+                                        <label>First Name <abbr class="required"  title="required">*</abbr></label>
+                                        <input type="text" name="first_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="billing-info mb-20">
+                                        <label>Last Name <abbr class="required" title="required">*</abbr></label>
+                                        <input type="text" name="last_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="billing-info mb-20">
+                                        <label>Country <abbr class="required" title="required">*</abbr></label>
+                                        <input type="text" name="place" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="billing-info mb-20">
+                                        <label>Street Address <abbr class="required" title="required">*</abbr></label>
+                                        <input class="billing-address" placeholder="House number and street name" type="text" name="house" required>
+                                        <input placeholder="Apartment, suite, unit etc." type="text" name="apartment" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="billing-info mb-20">
+                                        <label>Town / City <abbr class="required" title="required">*</abbr></label>
+                                        <input type="text" name="city" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="billing-info mb-20">
+                                        <label>State  <abbr class="required" title="required">*</abbr></label>
+                                        <input type="text" name="state" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="billing-info mb-20">
+                                        <label>Postcode / ZIP <abbr class="required" title="required">*</abbr></label>
+                                        <input type="text" name="pin_code" required>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12">
+                                    <div class="billing-info mb-20">
+                                        <label>Phone <abbr class="required" title="required">*</abbr></label>
+                                        <input type="text" name="phn_no" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="additional-info-wrap">
+                                <label>Order notes</label>
+                                <textarea placeholder="Notes about your order, e.g. special notes for delivery." name="message"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="Place-order pt-3">
+                        <button class="p-1" style="background-color: red; color: white;width: 100px; border-style: none; border-radius: 5px;">
+                            <b>submit</b>
+                            </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
