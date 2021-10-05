@@ -1,0 +1,107 @@
+{% extends 'admin/dashboard.html' %} {% block content %}
+
+<section class="content-main">
+    <div class="content-header">
+        <h2 class="content-title">Coupons</h2>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <form action="{% url 'coupon_management' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">coupon Name</label>
+                            <input type="text" placeholder="Type here" class="form-control" required name="Offer_name" id="product_name" />
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_slug" class="form-label">coupon Percentage</label>
+                            <input type="text" placeholder="Type here" class="form-control" required name="Offer_percentage" id="product_slug" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="date" placeholder="Expiry date" class="form-control" required name="Expiry_date" id="expiry_date" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Expiry Time</label>
+                            <input type="time" placeholder="Expiry date" class="form-control" required name="Expiry_time" id="expiry_time" />
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary">Create Offer</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-8">
+                    <div class="col-search" style="padding-bottom: 30px;">
+                        <form class="searchform">
+                            <div class="input-group">
+                                <input list="search_terms" type="text" class="form-control" placeholder="Search term">
+                                <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i> </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <table class="table table-hover">
+                        <thead>
+
+                            <tr>
+                                <!-- <th>
+                                             <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" value="" />
+                                             </div>
+                                        </th> -->
+                                <th>coupon code1</th>
+                                <th>Name</th>
+                                <th>offer Percentage</th>
+                                <th>Expiry_date</th>
+                                <th>Expiry_time</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for coupon in coupons %}
+                            <tr>
+                                <!-- <td>
+                                             <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" value="" />
+                                             </div>
+                                        </td> -->
+                                <td>{{coupon.coupon_code}}</td>
+                                <td><b>{{coupon.coupon_name}}</b></td>
+                                <td>{{coupon.percentage}}</td>
+                                <td>{{coupon.expiry_date}}</td>
+                                <td>{{coupon.expiry_time}}</td>
+                                <td class="text-end">
+                                    <div class="dropdown">
+                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light"> <i class="material-icons md-more_horiz"></i> </a>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="{% url 'coupon_edit' coupon.id %}">Edit</a>
+                                            <a class="dropdown-item text-danger" href="% url 'coupon_delete' coupon.id %}" onclick="return confirm('Are you want to delete?')">Delete</a>
+
+                                        </div>
+                                    </div>
+                                    <!-- dropdown //end -->
+                                </td>
+                            </tr>
+                            <!-- The Modal -->
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- .col// -->
+            </div>
+            <!-- .row // -->
+        </div>
+        <!-- card body .// -->
+    </div>
+    <!-- card .// -->
+    {% if messages %} {% for message in messages %} {% if message.tags == "success" %}
+    <div class="alert alert-success">{{ message }}</div>
+    {% elif message.tags == "error" %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endif %} {% endfor %} {% endif %}
+</section>
+<!-- content-main end// -->
+{% endblock %}

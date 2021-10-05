@@ -1,0 +1,209 @@
+{% extends 'user/login.html' %} {% load static %} {% block content %}
+
+<div class="breadcrumb-area bg-gray">
+    <div class="container">
+        <div class="breadcrumb-content text-center">
+            <ul>
+                <li>
+                    <a href="index.html">Home</a>
+                </li>
+                <li class="active">
+                    checkout</li>
+
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="checkout-main-area pt-120 pb-120">
+    <div class="container">
+        <!-- <div class="customer-zone mb-20">
+            <p class="cart-page-title">Returning customer? <a class="checkout-click1" href="#">Click here to login</a></p>
+            <div class="checkout-login-info">
+                <p>If you have shopped with us before, please enter your details in the boxes below. If you are a new customer, please proceed to the Billing & Shipping section.</p>
+                <form action="#">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="sin-checkout-login">
+                                <label>Username or email address <span>*</span></label>
+                                <input type="text" name="user-name">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="sin-checkout-login">
+                                <label>Passwords <span>*</span></label>
+                                <input type="password" name="user-password">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-remember-wrap">
+                        <button class="button" type="submit">Login</button>
+                        <div class="checkout-login-toggle-btn">
+                            <input type="checkbox">
+                            <label>Remember me</label>
+                        </div>
+                    </div>
+                    <div class="lost-password">
+                        <a href="#">Lost your password?</a>
+                    </div>
+                </form> -->
+        <!-- <div class="checkout-login-social">
+                    <span>Login with:</span>
+                    <ul>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Google</a></li>
+                    </ul>
+                 </div> -->
+        <!-- </div>
+        </div> -->
+        <!-- <div class="customer-zone mb-20">
+                    <p class="cart-page-title">Have a coupon? <a class="checkout-click3" href="#">Click here to enter your code</a></p>
+                    <div class="checkout-login-info3">
+                        <form action="#">
+                            <input type="text" placeholder="Coupon code">
+                            <input type="submit" value="Apply Coupon">
+                        </form>
+                    </div>
+                </div> -->
+        <div class="checkout-wrap pt-30">
+            <form action="{% url 'user_order' product %}" method="POST" id="myForm">
+                {% csrf_token %}
+                <div class="your-order-area">
+                    <div class="row">
+                        <h3>Your order</h3>
+                        <div class="your-order-wrap gray-bg-4 col-lg-6">
+                            <h3>
+                                Address </h3>
+                            <div class="payment-method">
+                                {% for address in address_data %}
+                                <div class="pay-top sin-payment">
+                                    <input class="input-radio address_option" type="radio" value="{{address.id}}" name="address" required>
+                                    <label> {{address}} </label>
+                                    <!-- <a href="{% url 'delete_address' address.id %}" class="btn">Delete</a> -->
+
+                                </div>
+                                {% endfor %}
+                                <div>
+                                    <a href="{% url 'add_address' product %}" class="btn" style="background-color: red; color: white;">add new address</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="your-order-wrap gray-bg-4 col-lg-6">
+                            <div class="your-order-info-wrap">
+                                <div class="your-order-info">
+                                    <ul>
+                                        <li>Product <span>Total</span></li>
+                                    </ul>
+                                </div>
+                                <div class="your-order-middle">
+                                    <ul>
+                                        {% if product == '-1' %} {% for data_car in cart_data %}
+                                        <li>{{data_car.products_name}}</li>
+                                        {% endfor %} {% endif %}
+                                    </ul>
+                                </div>
+                                <div class="your-order-info order-total">
+                                    <ul>
+                                        <li>Total <span>{{total}} </span></li>
+                                    </ul>
+                                    <ul id="coupon_succes">
+                                    </ul>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="your-order-wrap gray-bg-4 col-lg-6">
+                            <div class="payment-method">
+                                <div class="pay-top sin-payment">
+                                    <input id="payment-method-2" class="input-radio payment_option" type="radio" value="Razorpay" required name="payment_method">
+                                    <label for="payment-method-2">Razor Pay</label>
+                                    <div class="payment-box payment_method_bacs">
+                                        <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
+                                    </div>
+                                </div>
+                                <div class="pay-top sin-payment">
+                                    <input id="payment-method-3" class="input-radio payment_option" type="radio" value="COD" required name="payment_method">
+                                    <label for="payment-method-3">Cash on delivery </label>
+                                    <div class="payment-box payment_method_bacs">
+                                        <p>Make your payment directly. Please use your Order ID as the payment reference.</p>
+                                    </div>
+                                </div>
+                                <div class="pay-top sin-payment sin-payment-3">
+                                    <input id="payment-method-4" class="input-radio payment_option" type="radio" value="Paypal" required name="payment_method">
+                                    <label for="payment-method-4">PayPal <img alt="" src="{% static 'images/icon-img/payment.png' %}"><a href="#">What is PayPal?</a></label>
+                                    <div class="payment-box payment_method_bacs">
+                                        <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="Place-order">
+                                <button class="btn" hidden="true" type="submit" id="COD_Button" style="background-color: red; color: white;">Place order</button>
+                                <button id="rzp-button1" hidden="true" class="btn" style="background-color: red; color: white;">Razor Pay</button>
+                                <div id="paypal-button-container" hidden="true" class="btn"></div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="discount-code-wrapper">
+                                <div class="title-wrap">
+                                    <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
+                                </div>
+                                <div class="discount-code">
+                                    <p>Enter your coupon code if you have one.</p>
+                                    
+                                        <input type="text" id="couponCode" name="offer_code">
+                                        <button class="cart-btn-2" type="button" id="couponClick">Apply Coupon</button>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+            </form>
+
+
+            </div>
+        </div>
+    </div>
+    <script>
+        var btn = document.getElementById("couponClick");
+        btn.onclick = function() {
+            var total={{total}}
+            var coupon_code = document.getElementById("couponCode").value;
+            console.log(coupon_code)
+            coupon_check(total, coupon_code)
+        }
+
+        function coupon_check(total,coupon_code) {
+            var url = '/coupon_check/'
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify({
+                        'total': total,
+                        'coupon_code': coupon_code,
+                    }),
+                })
+                .then((response) => {
+                    return response.json()
+                })
+                .then((data) => {
+                    console.log(data)
+                    if (data.success) {
+                        html_data = `<li> New Total: <span>${data.value}</span></li>`
+                        document.getElementById('coupon_succes').innerHTML = html_data
+                    }
+                    else {
+                        alert(data.value)
+                    }
+                })
+        }
+    </script>
+    {% endblock %}

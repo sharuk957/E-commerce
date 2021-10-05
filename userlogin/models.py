@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.deletion import CASCADE, DO_NOTHING, PROTECT
+
 # Create your models here.
 
     
@@ -17,7 +18,7 @@ class address(models.Model):
     order_notes = models.CharField(max_length=2500,null=True)
     
     def __str__(self):
-         return self.first_name + ' '+self.last_name+ ' '+ self.street_address + ' '+ self.city + ' '+self.state+ ' '+ str(self.pin_code)
+         return self.first_name + ' '+self.last_name+ ', '+ self.street_address + ', '+ self.city + ', '+self.state+ ', '+ str(self.pin_code)
      
  
 
@@ -32,11 +33,17 @@ class cart(models.Model):
 
 class orders(models.Model):
     user_name=models.ForeignKey(User,on_delete=models.CASCADE)
-    user_address = models.ForeignKey(address,on_delete=CASCADE)
+    user_address = models.CharField(max_length=2500)
     products = models.ForeignKey(products,on_delete=models.CASCADE)
     quantity = models.IntegerField()
     total = models.IntegerField()
     payment_method = models.CharField(max_length=100)
     date = models.DateTimeField()
     status = models.CharField(max_length=100)
+    
+class userimage(models.Model):
+    user_name=models.ForeignKey(User,on_delete=models.CASCADE)
+    profileimage = models.ImageField(upload_to='pics',null=True)
+    referral_code = models.CharField(max_length=150)
+    wallet_cash = models.IntegerField()
     

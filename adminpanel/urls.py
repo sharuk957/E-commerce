@@ -23,6 +23,17 @@ urlpatterns = [
     path('brand_edit/<pk>', views.edit_brand, name='brand_edit'),
     path('ordermanagment/', views.ordermanagment, name='ordermanagment'),
     path('dropdownview/', views.dropdownview, name='dropdownview'),
+    path('offer_management/', views.offermanagement, name='offer_management'),
+    path('offer_edit/<id>', views.offer_edit, name='offer_edit'),
+    path('offer_delete/<id>', views.offer_delete, name='offer_delete'),
+    path('add_product_offer/', views.add_product_offer, name='add_product_offer'),
+    path('add_category_offer/', views.add_category_offer, name='add_category_offer'),
+    path('coupon_management/', views.couponmanagement, name='coupon_management'),
+    path('coupon_edit/<id>', views.coupon_edit, name='coupon_edit'),
+    path('coupon_delete/<id>', views.coupon_delete, name='coupon_delete'),
+    path('check_validity/',views.check_validity, name='check_validity'),
+    path('report/',views.sales_report, name='report'),
+    # path('convertreport/<from_date><to_date>',views.html_to_pdf_view, name='convertreport'),
     
     
 ]

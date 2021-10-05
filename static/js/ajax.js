@@ -27,7 +27,27 @@ function cartmanagment(product_id, action) {
             return response.json()
         })
         .then((data) => {
-            console.log(data)
             location.reload()
         })
 }
+console.log("hi");
+$('.status-change').change(function() {
+    console.log("hi");
+    var status = $(this).children("option:selected").val()
+    var order_id = this.dataset.id;
+    var url = '/newadmin/ordermanagment/'
+    fetch(url, {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                'X-CSRFToken': csrftokens,
+            },
+            body: JSON.stringify({ 'status': status, 'order_id': order_id })
+        }).then((response) => {
+            return response.json()
+        })
+        .then((data) => {
+            console.log(data)
+            location.reload()
+        })
+})

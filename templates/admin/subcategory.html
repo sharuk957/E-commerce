@@ -1,0 +1,210 @@
+{% extends 'admin/dashboard.html' %} {% block content %}
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    /* The Modal (background) */
+    
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        padding-top: 100px;
+        /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+    /* Modal Content */
+    
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+    }
+    /* The Close Button */
+    
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+</style>
+<section class="content-main">
+    <div class="content-header">
+        <h2 class="content-title">Sub Categories</h2>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <form action="{% url 'subcategories' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" name="category">
+                                <option></option>
+                                        {% for category in category_data %}
+                                        <option> {{ category.category_name }} </option>
+                                        {% endfor %}
+                                   </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Sub category Name</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="sub_category" required id="product_name" />
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_slug" class="form-label">Slug</label>
+                            <input type="text" placeholder="Type here" class="form-control" name="sub_category_slug" required id="product_slug" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" name="sub_category_desc" required rows="4"></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary">Create category</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-8">
+
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <!-- <th>
+                                             <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" value="" />
+                                             </div>
+                                        </th>
+                                        <th>ID</th> -->
+
+                                <th>Name</th>
+                                <th>category</th>
+                                <th>Description</th>
+                                <th>Slug</th>
+                                <th>Offers</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sub_category in data %}
+                            <tr>
+                                <!-- <td>
+                                             <div class="form-check">
+                                                  <input class="form-check-input" type="checkbox" value="" />
+                                             </div>
+                                        </td>
+                                        <td>21</td> -->
+                                <td><b>{{ sub_category.sub_category_name }}</b></td>
+                                <td><b>{{ sub_category.category_name.category_name}}</b></td>
+                                <td>{{ sub_category.description }}</td>
+                                <td>{{ sub_category.slug }}</td>
+                                <td>{{sub_category.subcategory_offer}}</td>
+                                <td class="text-end">
+                                    <div class="dropdown">
+                                        <a href="#" data-bs-toggle="dropdown" class="btn btn-light"> <i class="material-icons md-more_horiz"></i> </a>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" href="{% url 'sub_category_edit' sub_category.id %}">Edit</a>
+                                            <a class="dropdown-item addsubcategoryoffer" id="myBtn" data-id="{{sub_category.id}}">Add Offer</a>
+                                            <a class="dropdown-item text-danger" href="{% url 'sub_category_delete' sub_category.id %}" onclick="return confirm('Are you want to delete {{sub_category.id}}?')">Delete</a>
+                                        </div>
+                                    </div>
+                                    <!-- dropdown //end -->
+                                </td>
+                            </tr>
+
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+                <!-- .col// -->
+            </div>
+            <!-- .row // -->
+        </div>
+        <!-- card body .// -->
+    </div>
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form method="post" action="{% url 'add_category_offer' %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <input type="hidden" name="sub_category_id" id="sub_categoryfield">
+                    <label class="form-label">Offers</label>
+                    <select class="form-select" name="subcategory_offer">
+                        {% for offer in offers %}
+                            <option>{{ offer.offer_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="d-grid">
+                    <button class="btn btn-primary">submit</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <script>
+        data = document.getElementsByClassName('addsubcategoryoffer')
+        for (i = 0; i < data.length; i++) {
+            data[i].addEventListener('click', function() {
+                id = this.dataset.id;
+                alert(id)
+                popupwindow1(id)
+
+
+            })
+        }
+
+        function popupwindow1(id) {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "block";
+            document.getElementById("sub_categoryfield").value = id;
+        }
+        var modal = document.getElementById("myModal");
+        var span = document.getElementsByClassName("close")[0];
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+    <!-- card .// -->
+    {% if messages %} {% for message in messages %} {% if message.tags == "success" %}
+    <div class="alert alert-success">{{ message }}</div>
+    {% elif message.tags == "error" %}
+    <div class="alert alert-danger">{{ message }}</div>
+    {% endif %} {% endfor %} {% endif %}
+</section>
+<!-- content-main end// -->
+{% endblock %}

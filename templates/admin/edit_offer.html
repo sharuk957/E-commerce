@@ -1,0 +1,47 @@
+{% extends 'admin/dashboard.html' %} {% block content %}
+<section class="content-main">
+    <div class="content-header">
+        <h2 class="content-title">Categories</h2>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <form action="{% url 'offer_edit' offer.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">offer Name</label>
+                            <input type="text" placeholder="Type here" class="form-control" required name="Offer_name" id="product_name" value="{{offer.offer_name}}" />
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_slug" class="form-label">Offer Percentage</label>
+                            <input type="text" placeholder="Type here" class="form-control" required name="Offer_percentage" id="product_slug" value="{{offer.percentage}}" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="date" placeholder="Expiry date" class="form-control" required name="Expiry_date" id="expiry_date" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Expiry Time</label>
+                            <input type="time" placeholder="Expiry date" class="form-control" required name="Expiry_time" id="expiry_time" />
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary">Create Offer</button>
+                        </div>
+                    </form>
+                    {% if messages %} {% for message in messages %} {% if message.tags == "success" %}
+                    <div class="alert alert-success">{{ message }}</div>
+                    {% elif message.tags == "error" %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                    {% endif %} {% endfor %} {% endif %}
+                </div>
+            </div>
+            <!-- .row // -->
+        </div>
+        <!-- card body .// -->
+    </div>
+    <!-- card .// -->
+</section>
+<!-- content-main end// -->
+{% endblock %}
