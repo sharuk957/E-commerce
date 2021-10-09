@@ -221,10 +221,10 @@
                                         <a href="wishlist.html"><i class="icon-user"></i></a>
                                     </div> -->
                                     <div class="same-style-2">
-                                        <a href="#"><i class="icon-heart"></i><span class="pro-count red">0</span></a>
+                                        <a href="{% url 'wishlist' %}"><i class="icon-heart"></i><span class="pro-count red">{{wish_count}}</span></a>
                                     </div>
                                     <div class="same-style-2">
-                                        <a href=" {% url 'cart' %}">
+                                        <a href="{% url 'cart' %}">
                                             <i class="icon-basket-loaded"></i><span class="pro-count red cart_count">{{count}}</span>
                                         </a>
                                     </div>
@@ -248,7 +248,7 @@
                                     <a href="login-register.html"><i class="icon-user"></i></a>
                                 </div> -->
                                 <div class="same-style-2">
-                                    <a href="#"><i class="icon-heart"></i><span class="pro-count red">0</span></a>
+                                    <a href="{% url 'wishlist' %}"><i class="icon-heart"></i><span class="pro-count red">{{wish_count}}</span></a>
                                 </div>
                                 <div class="same-style-2">
                                     <a href="{% url 'cart' %}">
@@ -562,43 +562,41 @@
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/ajax.js' %}"></script>
     <script>
-    var url= '/newadmin/check_validity/'
-         $( document ).ready( function(){
-            console.log('hhhhhh')
+        var url = '/newadmin/check_validity/'
+        $(document).ready(function() {
+
             fetch(url, {
-            method: 'POST',
-            headers: {
-                'content-type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            },
-            body: JSON.stringify('')
-        })
-        .then((response) => {
-            return response.json()
-        })
-        .then((data) => {
-            
-        })
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                    },
+                    body: JSON.stringify('')
+                })
+                .then((response) => {
+                    return response.json()
+                })
+                .then((data) => {
+
+                })
         })
     </script>
     <script>
         $('.payment_option').click(function() {
             var payment = $('input[name="payment_method"]:checked').val();
-            console.log(payment)
-            if (payment=='Razorpay'){
+
+            if (payment == 'Razorpay') {
                 $('#rzp-button1').removeAttr('hidden')
-                $('#COD_Button').attr('hidden',true)
-                $('#paypal-button-container').attr('hidden',true)
-            }
-            else if (payment=='COD'){
+                $('#COD_Button').attr('hidden', true)
+                $('#paypal-button-container').attr('hidden', true)
+            } else if (payment == 'COD') {
                 $('#COD_Button').removeAttr('hidden')
-                $('#paypal-button-container').attr('hidden',true)
-                $('#rzp-button1').attr('hidden',true)
-            }
-            else{
+                $('#paypal-button-container').attr('hidden', true)
+                $('#rzp-button1').attr('hidden', true)
+            } else {
                 $('#paypal-button-container').removeAttr('hidden')
-                $('#rzp-button1').attr('hidden',true)
-                $('#COD_Button').attr('hidden',true)
+                $('#rzp-button1').attr('hidden', true)
+                $('#COD_Button').attr('hidden', true)
             }
         })
     </script>
@@ -616,6 +614,7 @@
     <script src="https://www.paypal.com/sdk/js?client-id=AT5F6ISnwzVdkjTj1K5NzmvRVpbXn8SYtbRHeehLViiMYUss-qIoE7CHk1PfIRqFA97aTVBoYYBYOvfG&currency=USD"></script>
     <script>
         var amount = {{total}}
+
         paypal.Buttons({
 
             style: {
@@ -666,9 +665,8 @@
         var payment_order_id
         var payment_amount
         document.getElementById('rzp-button1').onclick = function(e) {
-            console.log("jfjjffjjfj")
-            alert("hiiiii")
             e.preventDefault();
+            
             url = '/razorpayment/{{product}}'
             fetch(url, {
                     method: 'POST',
@@ -681,22 +679,16 @@
                     return response.json()
                 })
                 .then((data) => {
-                    console.log(data)
-                    console.log(typeof(data))
-                    console.log("111111111111111111111111111111")
+
                     payment_amount = data['amount']
-                    console.log(payment_amount)
-                    console.log("2222222222222222222222222222222222222222222");
+
                     payment_order_id = data['id']
 
-                    console.log(payment_order_id)
                     razorpayment_verification(payment_order_id, payment_amount)
                 })
         }
 
         function razorpayment_verification(userid, payment_amount) {
-            alert("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
-            console.log(userid, payment_amount)
             var options = {
                 "key": "rzp_test_g8LOYD78mSH0b6", // Enter the Key ID generated from the Dashboard
                 "amount": payment_amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise

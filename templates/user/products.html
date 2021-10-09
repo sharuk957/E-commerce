@@ -4,7 +4,7 @@
         <div class="breadcrumb-content text-center">
             <ul>
                 <li>
-                    <a href="index.html">Home</a>
+                    <a href="{%url 'home'%}">Home</a>
                 </li>
                 <li class="active">All</li>
             </ul>
@@ -61,8 +61,10 @@
                                                 <img src="{{product.image1.url}}" style="height: 300px;" alt="">
                                             </a>
                                             <div class="product-action-2 tooltip-style-2">
-
-                                                <button title="Wishlist"><i class="icon-heart"></i></button> {% if product.unit > 0 %}
+                                                <div class="mywishlist" data-product_id={{product.id}} data-action="add">
+                                                    <button title="Wishlist"><i class="icon-heart"></i></button>
+                                                </div>
+                                                {% if product.unit > 0 %}
                                                 <div class="mycart" data-product_id={{product.id}} data-action="add">
                                                     <button title="Add to cart"><i class="icon-basket"></i></button>
                                                 </div>

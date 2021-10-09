@@ -46,4 +46,8 @@ class userimage(models.Model):
     profileimage = models.ImageField(upload_to='pics',null=True)
     referral_code = models.CharField(max_length=150)
     wallet_cash = models.IntegerField()
-    
+
+class wishlist(models.Model):
+    user_name = models.ForeignKey(User,on_delete=models.CASCADE,null=True)
+    products_id = models.ForeignKey(products,on_delete=models.CASCADE)
+    guest_wishlist = models.UUIDField(null=True,unique=False)

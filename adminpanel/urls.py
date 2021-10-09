@@ -33,7 +33,8 @@ urlpatterns = [
     path('coupon_delete/<id>', views.coupon_delete, name='coupon_delete'),
     path('check_validity/',views.check_validity, name='check_validity'),
     path('report/',views.sales_report, name='report'),
-    # path('convertreport/<from_date><to_date>',views.html_to_pdf_view, name='convertreport'),
+    path('convertreport/<str:from_>/<str:to_>/',views.render_pdf_view, name='convertreport'),
+    path('convertreportcsv/<str:from_>/<str:to_>/',views.render_csv_view, name='convertreportcsv'),
     
     
 ]

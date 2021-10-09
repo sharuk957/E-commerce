@@ -1,74 +1,73 @@
-{% extends 'admin/dashboard.html' %} {% block content %}
-<section class="content-main">
+{% load static %}
+<html>
 
-    <div class="content-header">
-        <h2 class="content-title">Orders list</h2>
-        <!-- <div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Sample title - Ecommerce admin dashboard template</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+    <link href="images/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+    <link href="{% static 'admin/css/bootstrapf9e3.css' %}" rel="stylesheet" type="text/css" />
+
+    <!-- custom style -->
+    <link href="{% static 'admin/css/uif9e3.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'admin/css/responsivef9e3.css' %}" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.js"></script>
+
+    <!-- iconfont -->
+    <link rel="stylesheet" href="{% static 'admin/fonts/material-icon/css/round.css' %}" />
+
+</head>
+
+<body>
+    <main class="main-wrap">
+        <section class="content-main">
+
+            <div class="content-header">
+                <h2 class="content-title">Orders list</h2>
+                <!-- <div>
             <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
         </div> -->
-    </div>
-    <div class="card mb-4">
-        <header class="card-header">
-            <div class="row gx-3">
-                <div class="col-lg-2 col-md-6 me-auto">
-
-                    <input type="text" style="margin-top: 22px;" placeholder="Search..." class="form-control">
-                </div>
-                <div class="col-lg-6 col-md-6 me-auto">
-                    <form action="{% url 'report' %}" method="POST">
-                        {% csrf_token %}
-                        <div class="row">
-                            <div class="col-lg-5 col-6 col-md-3">
-                                <b>FROM</b>
-                                <input type="date" class="form-control" required name="from">
-                            </div>
-                            <div class="col-lg-5 col-6 col-md-3">
-                                <b>TO</b>
-                                <input type="date" class="form-control" required name="to">
-                            </div>
-                            <div class="col-lg-2 col-6 col-md-3 ">
-                                <button class="btn bg-primary" style="margin-top: 22px;" type="submit">Search</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
             </div>
-        </header>
-        <!-- card-header end// -->
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover text-center">
-                    <thead>
-                        <tr>
-                            <th>NO</th>
-                            <th>#ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">product details</th>
-                            <th scope="col">quantity</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Payment Method</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Date</th>
+            <div class="card mb-4">
+                <!-- card-header end// -->
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover text-center">
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>#ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">product details</th>
+                                    <th scope="col">quantity</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Payment Method</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for order in orders_data %}
-                        <tr>
-                            <td>{{forloop.counter}}</td>
-                            <td>NOR{{order.id}}</td>
-                            <td>{{order.user_name.username}}</td>
-                            <td><b>{{order.products.product_name}}</b></td>
-                            <td>{{order.quantity}}</td>
-                            <td>{{order.total}}</td>
-                            <td>{{order.payment_method}}</td>
-                            <td>{% if order.status == 'Cancelled' %}
-                                <span class="badge rounded-pill alert-warning">{{order.status}}</span> {% elif order.status == 'delivered' %}
-                                <span class="badge rounded-pill alert-success">{{order.status}}</span> {% else %}
-                                <span class="badge rounded-pill alert-info">{{order.status}}</span> {% endif %}
-                            </td>
-                            <td>{{order.date}}</td>
-                            <!-- <td class="text-end" hidden>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders_data %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>NOR{{order.id}}</td>
+                                    <td>{{order.user_name.username}}</td>
+                                    <td><b>{{order.products.product_name}}</b></td>
+                                    <td>{{order.quantity}}</td>
+                                    <td>{{order.total}}</td>
+                                    <td>{{order.payment_method}}</td>
+                                    <td>{% if order.status == 'Cancelled' %}
+                                        <span class="badge rounded-pill alert-warning">{{order.status}}</span> {% elif order.status == 'delivered' %}
+                                        <span class="badge rounded-pill alert-success">{{order.status}}</span> {% else %}
+                                        <span class="badge rounded-pill alert-info">{{order.status}}</span> {% endif %}
+                                    </td>
+                                    <td>{{order.date}}</td>
+                                    <!-- <td class="text-end" hidden>
                                 <a href="#" class="btn btn-light">submit</a>
                                 <div class="dropdown">
                                     <a href="#" data-bs-toggle="dropdown" class="btn btn-light"> <i class="material-icons md-more_horiz"></i> </a>
@@ -77,22 +76,24 @@
                                         <a class="dropdown-item text-danger" href="#">Delete</a>
                                     </div>
                                 </div> -->
-                            <!-- dropdown //end -->
-                            </td>
+                                    <!-- dropdown //end -->
+                                    </td>
 
-                        </tr>
-                        {% endfor %}
-                        <div>
-                    </tbody>
-                </table>
+                                </tr>
+                                {% endfor %}
+                                <div>
+                            </tbody>
+                        </table>
+                        </div>
+                        <!-- table-responsive //end -->
+                    </div>
+                    <!-- card-body end// -->
                 </div>
-                <!-- table-responsive //end -->
-            </div>
-            <!-- card-body end// -->
-        </div>
-        <!-- card end// -->
-</section>
-
+                <!-- card end// -->
+        </section>
+    </main>
+</body>
 <!-- conte
 content-mnt-main end// -->
-{% endblock %}
+
+</html>

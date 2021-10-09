@@ -20,23 +20,18 @@ function checkname() {
     if (name == "") {
         valid = "required field";
         n = false;
-
     } else if (name.match(pattern) && name.length <= 2) {
         valid = "please enter atleast 3 letter";
         n = false;
-        checkvalidation()
     } else if (name.match(pattern)) {
         valid = "";
         n = true;
-        checkvalidation()
     } else if (name.endsWith(" ")) {
         valid = "do not enter space as last character"
         n = false
-        checkvalidation()
     } else {
         n = false;
         valid = "characters only";
-        checkvalidation()
     }
     $('#check1').html(valid);
 }
@@ -48,23 +43,18 @@ function checklastname() {
     if (name == "") {
         valid = "required field";
         l = false;
-        checkvalidation()
-    } else if (name.match(pattern) && name.length <= 1) {
+    } else if (name.match(pattern) && name.length < 3) {
         valid = "please enter atleast 3 letter";
         l = false;
-        checkvalidation()
     } else if (name.match(pattern)) {
         valid = "";
         l = true;
-        checkvalidation()
     } else if (name.endsWith(" ")) {
         valid = "do not enter space as last character"
         l = false
-        checkvalidation()
     } else {
         l = false;
         valid = "characters only";
-        checkvalidation()
     }
     $('#check5').html(valid);
 }
@@ -76,15 +66,12 @@ function checkemail() {
     if (mail == "") {
         valid = "required field"
         e = false
-        checkvalidation()
     } else if (mail.match(pattern)) {
         valid = ""
         e = true
-        checkvalidation()
     } else {
         e = false
         valid = "please enter valid email"
-        checkvalidation()
     }
     $('#check2').html(valid);
 }
@@ -95,15 +82,12 @@ function checkmess() {
     if (msg == "") {
         valid = "required field"
         m = false
-        checkvalidation()
-    } else if (msg.length < 4) {
-        valid = "atleast 4 digit"
+    } else if (msg.length < 3) {
+        valid = "atleast 3 digit"
         m = false
-        checkvalidation()
     } else {
         valid = ""
         m = true
-        checkvalidation()
     }
     $('#check3').html(valid);
 }
@@ -115,11 +99,9 @@ function checkmess1() {
     if (msg != msg1) {
         valid = "passwords doesn't match"
         p = false
-        checkvalidation()
     } else {
         valid = ""
         p = true
-        checkvalidation()
     }
     $('#check4').html(valid);
 }
@@ -127,35 +109,41 @@ function checkmess1() {
 function checkusername() {
     var msg = $('#username').val();
     var valid
-    if (msg.length <= 5) {
+    if (msg.length < 5) {
         valid = "atleast 5 character"
         us = false
-        checkvalidation()
     } else {
         valid = ""
         us = true
-        checkvalidation()
     }
     $('#check6').html(valid);
 }
-$('#lastname').keyup(function() {
+$('#firstname').keyup(function() {
     checkname();
+    checkvalidation()
 });
 $('#lastname').keyup(function() {
     checklastname();
+    checkvalidation()
 });
+
 $('#emailfield').keyup(function() {
     checkemail();
+    checkvalidation()
 });
 $('#passwordfield').keyup(function() {
     checkmess();
+    checkvalidation()
 });
 $('#passwordfield1').keyup(function() {
     checkmess1();
+    checkvalidation()
 });
 $('#username').keyup(function() {
     checkusername();
+    checkvalidation()
 });
+
 $('#submitbtn').click(function() {
     checklastname()
     checkname()
@@ -163,3 +151,164 @@ $('#submitbtn').click(function() {
     checkemail()
     checkmess()
 });
+
+
+//address
+
+
+
+
+
+// function checkhouse() {
+//     var msg = $('#passwordfield').val();
+//     var valid
+//     if (msg == "") {
+//         valid = "required field"
+//         m = false
+//     } else if (msg.length < 3) {
+//         valid = "atleast 3 digit"
+//         m = false
+//     } else {
+//         valid = ""
+//         m = true
+//     }
+//     $('#check3').html(valid);
+// }
+
+// function checkapartment() {
+//     var msg = $('#passwordfield').val();
+//     var valid
+//     if (msg == "") {
+//         valid = "required field"
+//         m = false
+//     } else if (msg.length < 3) {
+//         valid = "atleast 3 digit"
+//         m = false
+//     } else {
+//         valid = ""
+//         m = true
+//     }
+//     $('#check3').html(valid);
+// }
+
+// function checkstate() {
+//     var msg = $('#passwordfield').val();
+//     var valid
+//     if (msg == "") {
+//         valid = "required field"
+//         m = false
+//     } else if (msg.length < 3) {
+//         valid = "atleast 3 digit"
+//         m = false
+//     } else {
+//         valid = ""
+//         m = true
+//     }
+//     $('#check3').html(valid);
+// }
+
+// function checkcity() {
+//     var msg = $('#passwordfield').val();
+//     var valid
+//     if (msg == "") {
+//         valid = "required field"
+//         m = false
+//     } else if (msg.length < 3) {
+//         valid = "atleast 3 digit"
+//         m = false
+//     } else {
+//         valid = ""
+//         m = true
+//     }
+//     $('#check3').html(valid);
+// }
+
+// function checkpin() {
+//     var num = $('#number').val();
+//     var valid
+//     var pattern = /^[0-9]*$/
+//     if (num == "") {
+//         valid = "required"
+//         nu = false
+//     } else if (num.match(pattern) && num.length < 6) {
+//         valid = "please enter 6 digit number"
+//         nu = true
+//     } else if (num.match(pattern)) {
+//         valid = ""
+//         nu = true
+//     } else {
+//         valid = "please enter numbers only"
+//         nu = false
+//     }
+//     $('#check3').html(valid);
+// }
+
+// function checknum() {
+//     var num = $('#number').val();
+//     var valid
+//     var pattern = /^[0-9]*$/
+//     if (num == "") {
+//         valid = "required"
+//         nu = false
+//     } else if (num.match(pattern) && num.length < 10) {
+//         valid = "please enter 10 digit number"
+//         nu = true
+//     } else if (num.match(pattern)) {
+//         valid = ""
+//         nu = true
+//     } else {
+//         valid = "please enter numbers only"
+//         nu = false
+//     }
+//     $('#check3').html(valid);
+// }
+
+// $('#address-firstname').keyup(function() {
+//     checkname();
+//     checkvalidation()
+// });
+// $('#address-lastname').keyup(function() {
+//     checklastname();
+//     checkvalidation()
+// });
+
+// $('#address-country').keyup(function() {
+//     checkmess();
+//     checkvalidation()
+// });
+// $('#address-house').keyup(function() {
+//     checkhouse();
+//     checkvalidation()
+// });
+// $('#address-apartment').keyup(function() {
+//     checkapartment();
+//     checkvalidation()
+// });
+// $('#address-city').keyup(function() {
+//     checkcity();
+//     checkvalidation()
+// });
+// $('#address-state').keyup(function() {
+//     checkstate();
+//     checkvalidation()
+// });
+// $('#address-pin_code').keyup(function() {
+//     checkpin();
+//     checkvalidation()
+// });
+// $('#address-phn_no').keyup(function() {
+//     checknum();
+//     checkvalidation()
+// });
+
+// $('#adress-submit').click(function() {
+//     checklastname()
+//     checkname()
+//     checknum()
+//     checkpin()
+//     checkstate()
+//     checkcity()
+//     checkapartment()
+//     checkhouse()
+//     checkmess()
+// });

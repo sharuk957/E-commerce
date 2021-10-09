@@ -29,10 +29,17 @@
                             <div class="col-lg-2 col-6 col-md-3 ">
                                 <button class="btn bg-primary" style="margin-top: 22px;" type="submit">Search</button>
                             </div>
+
                         </div>
                     </form>
+
                 </div>
-                <div><a href="{% 'convertreport' %}">convertreport</a></div>
+                {% if from or to %}
+                <div class="col-lg-2 col-md-6 me-auto">
+                    <a href="{% url 'convertreport' from to %}"><i class="fa fa-file-pdf" style="font-size:40px;margin-top: 22px;color: red;"></i></a>
+                    <a style="margin-top: 22px;" href="{% url 'convertreportcsv' from to %}"><i class="fas fa-file-csv" style="font-size:40px;margin-top: 22px; color:green;"></i></a>
+                </div>
+                {% endif %}
             </div>
         </header>
         <!-- card-header end// -->

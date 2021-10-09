@@ -104,8 +104,9 @@
                                 </div>
                                 <div class="your-order-info order-total">
                                     <ul>
-                                        <li>Total <span>{{total}} </span></li>
-                                    </ul>
+                                    <li>Total <span>{{new}} </span></li>
+                                    <li>offer_price <span>{{coupon.coupon_code.percentage}} </span></li>
+                                        <li>sub Total <span>{{total}} </span></li>
                                     <ul id="coupon_succes">
                                     </ul>
                                 </div>
@@ -143,7 +144,6 @@
                                 <button class="btn" hidden="true" type="submit" id="COD_Button" style="background-color: red; color: white;">Place order</button>
                                 <button id="rzp-button1" hidden="true" class="btn" style="background-color: red; color: white;">Razor Pay</button>
                                 <div id="paypal-button-container" hidden="true" class="btn"></div>
-
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6">
@@ -151,13 +151,19 @@
                                 <div class="title-wrap">
                                     <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
                                 </div>
+                                
+
                                 <div class="discount-code">
+                                {% if coupon %}
+                                <input type="text" name="offer_code" hidden="true" value="{{ coupon.coupon_code.coupon_code }}">
+                                {% else %}
                                     <p>Enter your coupon code if you have one.</p>
                                     
-                                        <input type="text" id="couponCode" name="offer_code">
+                                        <input type="text" id="couponCode" >
                                         <button class="cart-btn-2" type="button" id="couponClick">Apply Coupon</button>
-                                    
+                                        {% endif %}
                                 </div>
+                                
                             </div>
                         </div>
 
@@ -197,8 +203,7 @@
                 .then((data) => {
                     console.log(data)
                     if (data.success) {
-                        html_data = `<li> New Total: <span>${data.value}</span></li>`
-                        document.getElementById('coupon_succes').innerHTML = html_data
+                        location.reload()
                     }
                     else {
                         alert(data.value)

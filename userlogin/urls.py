@@ -27,6 +27,11 @@ urlpatterns = [
     path('razorpayment/<id>',views.razorpayment,name='razorpayment'),
     path('profileimage/',views.profileimage,name='profileimage'),
     path('coupon_check/',views.coupon_check,name='coupon_check'),
-    
+    path('wishlist/',views.wishlist_view, name='wishlist'),
+    path('add_wishlist/',views.add_wishlist, name='add_wishlist'),
+    path('remove_wishlist/',views.remove_wishlist, name='remove_wishlist'),
+    path('add_guest_wishlist/',views.add_guest_wishlist, name='add_guest_wishlist'),
+    path('remove_guest_wishlist/',views.remove_guest_wishlist, name='remove_guest_wishlist'),
+    path('wishlist_handler/',views.wishlist_handler, name='wishlist_handler'),
     # path('contact/', views.product),
 ]

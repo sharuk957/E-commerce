@@ -1,5 +1,7 @@
-{% extends 'user/login.html' %} {%block content %}
+{% extends 'user/login.html' %} {% load static %} {%block content %}
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{% static 'admin/css/cropper.min.css' %}">
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -76,6 +78,7 @@
         margin-bottom: 1rem;
     }
 </style>
+
 <div class="container">
     <div class="row gutters">
         <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
@@ -85,21 +88,49 @@
                         <div class="user-profile">
                             <div class="user-avatar">
                                 {% if user_image.profileimage %}
-                                <img src="{{user_image.url}}" alt="Maxwell"> {% else %}
-                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Maxwell Admin"> {% endif %}
+                                <img src="{{user_image.profileimage.url}}" alt="Maxwell"> {% else %}
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png"> {% endif %}
 
                             </div>
-                            <!-- <input type="file" name="image" id="profileimage"> -->
-                            <!-- <button class="btn btn-primary profileimage-change">edit</button> -->
 
 
+                            <figcaption>
+                                <a class="btn btn-outline-primary" href="#">
+                                    <i class="icons material-icons md-backup"><input class="form-control" type="file" id="profile_image" name="profile_image"></i>
+                                </a>
+                            </figcaption>
+
+
+
+
+                        </div>
+                        <div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="result1"></div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                </button>
+                                        <button type="button" id="btnCrop1" class="btn save1 btn-primary">Save changes
+                                </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="about">
                             <h5 class="user-name">{{user_detail.first_name}} {{user_detail.last_name}}</h5>
                             <h6 class="user-email">{{user_detail.email}}</h6>
                             <br>
                             <br>
-                            <h6><b>Referral Code :</b> {{user_image.referral_code}}</h6>
+                            <h6><b>Referral Code :</b>{{user_image.referral_code}}</h6>
                         </div>
                     </div>
                 </div>
@@ -193,34 +224,150 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="result1"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                </button>
+                <button type="button" id="btnCrop1" class="btn save1 btn-primary">Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL 1 -->
+<div class="modal fade" id="exampleModalCenter1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Crop Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="result1"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                </button>
+                <button type="button" id="btnCrop1" class="btn save1 btn-primary">Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/0.8.1/cropper.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     function changeval() {
-        console.log("hii");
         value = 1
         $('#passwordchange').html(value)
         value1 = $('#passwordchange').val()
-        console.log(value1)
     }
 </script>
-<!-- <script>
-    $('#profileimage').change(function(){
-        profile_image = $(this).val
-        console.log(profile_image)
+<script>
+    let result1 = document.querySelector('.result1'),
+        save1 = document.querySelector('.save1'),
+        upload1 = document.querySelector('#profile_image'),
+        cropper1 = '';
+
+    upload1.addEventListener('change', (e) => {
+        var fileName = document.getElementById("profile_image").value;
+        var idxDot = fileName.lastIndexOf(".") + 1;
+        var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+        if (extFile == "jpg" || extFile == "jpeg" || extFile == "png") {
+            if (e.target.files.length) {
+                // start file reader
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (e.target.result) {
+                        // create new image
+                        $("#exampleModalCenter1").modal("show");
+                        let img1 = document.createElement('img');
+                        img1.id = 'image1';
+                        img1.src = e.target.result;
+                        // clean result before
+                        result1.innerHTML = '';
+                        // append new image
+                        result1.appendChild(img1);
+                        // init cropper
+                        cropper1 = new Cropper(img1, {
+                            aspectRatio: 3 / 4,
+                            viewMode: 2,
+                        });
+                    }
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        } else {
+            swal("this file type is not supported", {
+                icon: "error",
+            })
+            fileName = "";
+            console.log(fileName)
+        }
+    });
+
+    save1.addEventListener('click', (e) => {
+        e.preventDefault();
+        // get result to data uri
+        let imgSrc1 = cropper1.getCroppedCanvas({
+            width: 800,
+            height: 500 // img disp value
+        }).toDataURL();
+        $("#exampleModalCenter1").modal("hide");
         var url = '/profileimage/'
-            fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json',
-                        'X-CSRFToken': csrftoken,
-                    },
-                    body: JSON.stringify({'profileimage':profile_image})
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({
+                    'profileimage': imgSrc1
                 })
-                .then((response) => {
-                    return response.json()
+            })
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => {
+                location.reload()
+            })
+
+    });
+</script>
+<!-- <script>
+    $('#profileimage').change(function() {
+        profile_image = $(this).val()
+        alert(typeof(profile_image))
+        var url = '/profileimage/'
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify({
+                    'profileimage': profile_image
                 })
-                .then((data) => {
-                    location.reload()
-                })
+            })
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => {
+                location.reload()
+            })
     })
 </script> -->
 {% endblock %}

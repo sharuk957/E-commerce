@@ -5,29 +5,26 @@ from django.db.models.aggregates import Count
 from django.db.models.query_utils import Q
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
-from adminpanel.models import products,coupon
+from adminpanel.models import products,coupon,user_coupon
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 import datetime
 import uuid
-from .models import cart,address,orders,userimage
+from .models import cart,address,orders,userimage,wishlist
 from django.db.models import Q
 from  django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash
+import base64
+from django.core.files.base import ContentFile
 
 
 def home(request):
     product = products.objects.all()
-    if request.session.has_key('logged_in'):
-        count=cart.objects.filter(user_name=request.user).count()
-    else:
-        if request.session.has_key('guest'):
-            count=cart.objects.filter(guest_token=request.session.get('guest')).count()
-        else:
-            count=0
-    return render(request, 'user/index.html', {'products': product,'count':count})
+    wish_count = wishlist_count(request)
+    count= cart_count(request)
+    return render(request, 'user/index.html', {'products': product,'count':count,'wish_count':wish_count})
 
 
 
@@ -47,14 +44,12 @@ def userlogin(request):
             messages.error(request, "invalid user name or password")
             return redirect('login')
     else:
+        wish_count = wishlist_count(request)
         if request.session.has_key('logged_in'):
             return redirect('home')
         else:
-            if request.session.has_key('guest'):
-                count=cart.objects.filter(guest_token=request.session.get('guest')).count()
-            else:
-                count=0
-            return render(request, 'user/login.html',{'count':count})
+            count= cart_count(request)
+            return render(request, 'user/login.html',{'count':count,'wish_count':wish_count})
 
 
 def register(request):
@@ -73,13 +68,13 @@ def register(request):
             elif User.objects.filter(email=email):
                 messages.error(request, "email already exist")
                 return redirect(register)
-            elif referral:
-                if userimage.objects.filter(referral_code=referral):
-                    pass
-                else:
-                    messages.error(request, "invalid refferal code")
-                    return redirect(register)
             else:
+                if referral:
+                    if userimage.objects.filter(referral_code=referral):
+                        pass
+                    else:
+                        messages.error(request, "invalid refferal code")
+                        return redirect(register)
                 user = User.objects.create_user(
                     username=username, email=email, password=password, first_name=firstname, last_name=lastname)
                 user.save()
@@ -88,7 +83,7 @@ def register(request):
                     referred_user = userimage.objects.get(referral_code=referral)
                     referred_user.wallet_cash+=50
                     referred_user.save()
-                    cash = 20
+                    cash = 20  
                 else:
                     cash = 0
                 userimage.objects.create(user_name=user,referral_code=referral_code,wallet_cash=cash)
@@ -97,14 +92,9 @@ def register(request):
         else:
             return redirect(register)
     else:
-        if request.session.has_key('logged_in'):
-            return redirect('home')
-        else:
-            if request.session.has_key('guest'):
-                count=cart.objects.filter(guest_token=request.session.get('guest')).count()
-            else:
-                count=0
-        return render(request, 'user/register.html',{'count':count})
+        wish_count = wishlist_count(request)
+        count= cart_count(request)
+        return render(request, 'user/register.html',{'count':count,'wish_count':wish_count})
 
 
 
@@ -122,33 +112,23 @@ def userlogout(request):
 def productview(request):
     data = products.objects.all().order_by("id")
     popular = orders.objects.all().values('products').annotate(total=Count('products')).order_by('-total').first
-    
-    if request.session.has_key('logged_in'):
-        count=cart.objects.filter(user_name=request.user).count()
-    else:
-        if request.session.has_key('guest'):
-            count=cart.objects.filter(guest_token=request.session.get('guest')).count()
-        else:
-            count=0
-    return render(request, 'user/products.html', {'products': data,'count':count,'popular':popular})
+    wish_count = wishlist_count(request)
+    count= cart_count(request)
+    return render(request, 'user/products.html', {'products': data,'count':count,'popular':popular,'wish_count':wish_count})
 
 
 def oneproduct(request, id):
     data = products.objects.get(id=id)
-    if request.session.has_key('logged_in'):
-        count=cart.objects.filter(user_name=request.user).count()
-    else:
-        if request.session.has_key('guest'):
-            count=cart.objects.filter(guest_token=request.session.get('guest')).count()
-        else:
-            count=0
-    return render(request, 'user/oneproduct.html', {'product': data,'count':count})
+    wish_count = wishlist_count(request)
+    count= cart_count(request)
+    return render(request, 'user/oneproduct.html', {'product': data,'count':count,'wish_count':wish_count})
 
 
 def cartview(request):
     sum=0
     price=0
     count=0
+    wish_count = wishlist_count(request)
     if request.session.has_key('logged_in'):
         data = cart.objects.filter(user_name=request.user).order_by("-id")
         
@@ -156,7 +136,7 @@ def cartview(request):
             sum+=cart1.quantity
             price+=cart1.total
             count+=1
-        return render(request, 'user/cart.html',{'cart':data, 'totalprice':price,'totalproduct':sum,'count':count})
+        return render(request, 'user/cart.html',{'cart':data, 'totalprice':price,'totalproduct':sum,'count':count,'wish_count':wish_count})
     else:
         if request.session.has_key('guest'):
             data = cart.objects.filter(guest_token=request.session['guest']).order_by("-id")
@@ -164,9 +144,9 @@ def cartview(request):
                 sum+=cart1.quantity
                 price+=cart1.total
                 count+=1
-            return render(request, 'user/cart.html',{'cart':data, 'totalprice':price,'totalproduct':sum,'count':count})
+            return render(request, 'user/cart.html',{'cart':data, 'totalprice':price,'totalproduct':sum,'count':count,'wish_count':wish_count})
         else:
-            return render(request, 'user/cart.html',{'count':count})
+            return render(request, 'user/cart.html',{'count':count,'wish_count':wish_count})
         
 
 
@@ -177,13 +157,24 @@ def checkout(request,id=-1):
         count = cart.objects.filter(user_name=request.user).count()
         user_id=User.objects.get(username=request.user)
         address_data=address.objects.filter(user_name=user_id)
+        wish_count = wishlist_count(request)
         if id == '-1' :
             cart_data=cart.objects.filter(user_name=request.user)
             if cart_data:
                 total=0
                 for cart_one in cart_data:
                     total +=cart_one.total
-                return render(request,'user/withlogincheckout.html',{'address_data':address_data,'cart_data':cart_data,'count':count,'product':-1,'total':total})
+                new_total = total
+                coupon_offers = user_coupon.objects.filter(user_name=request.user,status=False)
+                if coupon_offers:
+                    if coupon_offers.count() > 1:
+                        coupon_offers=coupon_offers.last()
+                    else:
+                        coupon_offers=coupon_offers.first()
+                    total = total - coupon_offers.coupon_code.percentage
+                else:
+                    total = total
+                return render(request,'user/withlogincheckout.html',{'address_data':address_data,'cart_data':cart_data,'count':count,'product':-1,'total':total,'new':new_total,'wish_count':wish_count,'coupon':coupon_offers})
             else:
                 return redirect(cartview)
             
@@ -193,7 +184,17 @@ def checkout(request,id=-1):
                 total=product.product_offer_price
             else:
                 total=product.price
-            return render(request,'user/withlogincheckout.html',{'address_data':address_data,'count':count,'product_data':product,'product':product.id,'total':total})
+            new_total = total
+            coupon_offers = user_coupon.objects.filter(user_name=request.user,status=False)
+            if coupon_offers:
+                if coupon_offers.count() > 1:
+                    coupon_offers=coupon_offers.last()
+                else:
+                    coupon_offers=coupon_offers.first()
+                    total = total - coupon_offers.coupon_code.percentage
+            else:
+                total = total
+            return render(request,'user/withlogincheckout.html',{'address_data':address_data,'count':count,'product_data':product,'product':product.id,'new':new_total,'total':total,'wish_count':wish_count,'coupon':coupon_offers})
     else:
         return redirect(userlogin)
   
@@ -202,14 +203,9 @@ def checkout(request,id=-1):
 @login_required(login_url='login')      
 def my_orders(request): 
     order_list=orders.objects.filter(user_name=User.objects.get(username=request.user)).order_by("date")
-    if request.session.has_key('logged_in'):
-        count=cart.objects.filter(user_name=request.user).count()
-    else:
-        if request.session.has_key('guest'):
-            count=cart.objects.filter(guest_token=request.session.get('guest')).count()
-        else:
-            count=0
-    return render(request,'user/orders.html',{'order_list':order_list,'count':count})
+    wish_count = wishlist_count(request)
+    count= cart_count(request)
+    return render(request,'user/orders.html',{'order_list':order_list,'count':count,'wish_count':wish_count})
 
 
 @login_required(login_url='login')
@@ -325,6 +321,17 @@ def guesthandler(request):
         return redirect(home)
 
 
+def cart_count(request):
+    if request.session.has_key('logged_in'):
+        count=cart.objects.filter(user_name=request.user).count()
+    else:
+        if request.session.has_key('guest'):
+            count=cart.objects.filter(guest_token=request.session.get('guest')).count()
+        else:
+            count=0
+    return count
+    
+    
 @login_required(login_url='login')   
 def address_view(request,id=-1):
     address_limit = address.objects.filter(user_name=request.user).count()
@@ -346,14 +353,9 @@ def address_view(request,id=-1):
                                          street_address=street_address,state=state,pin_code=pin_code,phn_no=phn_number,order_notes=order_notes)
         return redirect(checkout,id)
     else:
-        if request.session.has_key('logged_in'):
-            count=cart.objects.filter(user_name=request.user).count()
-        else:
-            if request.session.has_key('guest'):
-                count=cart.objects.filter(guest_token=request.session.get('guest')).count()
-            else:
-                count=0
-        return render(request,'user/address.html',{'count':count,'product':id})
+        wish_count = wishlist_count(request)
+        count= cart_count(request)
+        return render(request,'user/address.html',{'count':count,'product':id,'wish_count':wish_count})
 
 
 @login_required(login_url='login')  
@@ -391,15 +393,21 @@ def user_order(request,id=-1):
                     try:
                         if coupon.objects.filter(coupon_code=coupon_code):
                             coupons = coupon.objects.get(coupon_code=coupon_code)
-                            if sub_total<coupons.minimal_rate:
+                            user_coupons = user_coupon.objects.filter(coupon_code=coupons,user_name=user_data,status=True)
+                            if user_coupons:
                                 total=total
                             else:
-                                if total>coupons.percentage:
-                                    total = total - coupons.percentage
-                                    coupons.delete()
+                                if sub_total<coupons.minimal_rate:
+                                    total=total
                                 else:
-                                    coupons.percentage -=total
-                                    total=0
+                                    if total>coupons.percentage:
+                                        total = total - coupons.percentage
+                                        offers=user_coupon.objects.get(coupon_code=coupons,user_name=user_data,status=False)
+                                        offers.status=True
+                                        offers.save()
+                                    else:
+                                        coupons.percentage -=total
+                                        total=0
                     except:
                         total = total
                 else:
@@ -421,11 +429,17 @@ def user_order(request,id=-1):
                 try:
                     if coupon.objects.filter(coupon_code=coupon_code):
                         coupons = coupon.objects.get(coupon_code=coupon_code)
-                        if total<coupons.minimal_rate:
+                        user_coupons = user_coupon.objects.filter(coupon_code=coupons,user_name=user_data,status=True)
+                        if user_coupons:
                             total=total
                         else:
-                            total = total - coupons.percentage
-                            coupons.delete()
+                            if total<coupons.minimal_rate:
+                                total=total
+                            else:
+                                total = total - coupons.percentage
+                                offers=user_coupon.objects.get(coupon_code=coupons,user_name=user_data,status=False)
+                                offers.status=True
+                                offers.save()
                     
                 except:
                     total = total
@@ -443,28 +457,18 @@ def user_order(request,id=-1):
 def search(request):
     search_query=request.GET['search']
     data = products.objects.filter(Q(product_name__icontains=search_query)).order_by("id")
-    if request.session.has_key('logged_in'):
-        count=cart.objects.filter(user_name=request.user).count()
-    else:
-        if request.session.has_key('guest'):
-            count=cart.objects.filter(guest_token=request.session.get('guest')).count()
-        else:
-            count=0
-    return render(request, 'user/products.html', {'products': data,'count':count})
+    wish_count = wishlist_count(request)
+    count= cart_count(request)
+    return render(request, 'user/products.html', {'products': data,'count':count,'wish_count':wish_count})
 
 
 def profile(request):
-    if request.session.has_key('logged_in'):
-        count=cart.objects.filter(user_name=request.user).count()
-    else:
-        if request.session.has_key('guest'):
-            count=cart.objects.filter(guest_token=request.session.get('guest')).count()
-        else:
-            count=0
+    wish_count = wishlist_count(request)
+    count= cart_count(request)
     user_detail=User.objects.get(username=request.user)
     user_address=address.objects.filter(user_name=request.user)
-    user_image=userimage.objects.filter(user_name=user_detail)
-    return render(request, 'user/profile.html',{'user_detail':user_detail,'count':count,'user_address':user_address,'user_image':user_image})
+    user_image=userimage.objects.get(user_name=user_detail)
+    return render(request, 'user/profile.html',{'user_detail':user_detail,'count':count,'user_address':user_address,'user_image':user_image,'wish_count':wish_count})
 
 @login_required(login_url='login')  
 def editaddress(request,id):
@@ -516,15 +520,9 @@ def newaddress_view(request):
                                          street_address=street_address,state=state,pin_code=pin_code,phn_no=phn_number,order_notes=order_notes)
         return redirect(profile)
     else:
-        if request.session.has_key('logged_in'):
-            count=cart.objects.filter(user_name=request.user).count()
-        else:
-            if request.session.has_key('guest'):
-                count=cart.objects.filter(guest_token=request.session.get('guest')).count()
-            else:
-                count=0
-        
-        return render(request,'user/newaddress.html',{'count':count})
+        wish_count = wishlist_count(request)
+        count= cart_count(request)
+        return render(request,'user/newaddress.html',{'count':count,'wish_count':wish_count})
 
 def edit_user(request):
     if request.method == 'POST':
@@ -555,13 +553,17 @@ def edit_user(request):
 def profileimage(request):
     if request.method == "POST":
         data=json.loads(request.body)
-        profileimage = data['profileimage']
+        image = data['profileimage']
+        format, img1 = image.split(';base64,')
+        ext = format.split('/')[-1]
+        profile_image = ContentFile(base64.b64decode(img1), name= request.user.username + '1.' + ext)
         username = User.objects.get(username=request.user)
         if userimage.objects.filter(user_name=username):
             userimage_details = userimage.objects.get(user_name=username)
-            userimage_details.image = profileimage
+            userimage_details.profileimage = profile_image
+            userimage_details.save()
         else:
-            userimage.objects.create(user_name=username,profileimage=profileimage)
+            userimage.objects.create(user_name=username,profileimage=profileimage,wallet_cash=0)
     return JsonResponse('success',safe=False)
 
 
@@ -572,12 +574,31 @@ def razorpayment(request,id=-1):
         cart_data = cart.objects.filter(user_name=request.user)
         for each_product in cart_data:
             total = each_product.total
+        coupon_offers = user_coupon.objects.filter(user_name=request.user,status=False)
+        if coupon_offers:
+            if coupon_offers.count() > 1:
+                coupon_offers=coupon_offers.last()
+            else:
+                coupon_offers=coupon_offers.first()
+            total = total - coupon_offers.coupon_code.percentage
+        else:
+            total = total
+        
     else:
         product=products.objects.get(id=id)
         if product.product_offer:
             total = product.product_offer_price
         else:
             total = product.price
+        coupon_offers = user_coupon.objects.filter(user_name=request.user,status=False)
+        if coupon_offers:
+            if coupon_offers.count() > 1:
+                coupon_offers=coupon_offers.last()
+            else:
+                coupon_offers=coupon_offers.first()
+            total = total - coupon_offers.coupon_code.percentage
+        else:
+            total = total
     client = razorpay.Client(auth=("rzp_test_g8LOYD78mSH0b6", "QA95rexPt8ZJiMMrBj6alkqc"))
     order_amount = total*100
     
@@ -595,18 +616,127 @@ def coupon_check(request):
         total= data['total']
         try:
             if coupon.objects.filter(coupon_code=code):
+
                 coupons = coupon.objects.get(coupon_code=code)
-                if total<coupons.minimal_rate:
-                    message = "Coupon is not available"
+               
+                user_coupons = user_coupon.objects.filter(user_name=request.user,coupon_code=coupons)
+                if user_coupons:
+                    
+                    message = "coupon already used"
                     success = False
                 else:
-                    new_total = total - coupons.percentage
-                    message=new_total
-                    success=True
+                    
+                    if total<coupons.minimal_rate:
+                        
+                        message = "Coupon is not available"
+                        success = False
+                    else:
+                        
+                        new_total = total - coupons.percentage
+                        message=new_total
+                        success=True
+                        user_coupon.objects.create(user_name=request.user,coupon_code=coupons,status=False)
+            else:
+                
+                message = "coupon already used"
+                success = False
         except:
+            
             message = "Coupon is not available"
             success = False
         return JsonResponse({'value':message,'success':success},safe=False)   
     else:
         return JsonResponse('unsuccess',safe=False)
     
+#wishlist.............................................
+def wishlist_view(request):
+    cart_counts= cart_count(request)
+    if request.session.has_key('logged_in'):
+        data = wishlist.objects.filter(user_name=request.user).order_by("-id")
+        count = data.count()
+        return render(request,'user/wishlist.html',{'wishlists':data,'wish_count':count,'count':cart_counts})
+    else:
+        if request.session.has_key('guest_wish'):
+            data = wishlist.objects.filter(guest_token=request.session['guest_wish']).order_by("-id")
+            count = data.count()
+            return render(request, 'user/wishlist.html',{'wishlists':data,'wish_count':count,'count':cart_counts})
+        else:
+            count=0
+            return render(request, 'user/wishlist.html',{'wish_count':count,'count':cart_counts})
+
+def add_wishlist(request):
+    data=json.loads(request.body)
+    id = data['productid']
+    username = request.user
+    product = products.objects.get(pk=id)
+    userdeatails = username
+    if wishlist.objects.filter(user_name=userdeatails,products_id=product):
+        messages.error(request, "item already in your wishlist")
+    else:
+        wishlist.objects.create(user_name=userdeatails,products_id=product)
+    return JsonResponse('success', safe=False)
+
+
+def remove_wishlist(request):
+    data=json.loads(request.body)
+    id = data['productid']
+    username = request.user
+    product = products.objects.get(pk=id)
+    userdeatails = username
+    wishlist_details=wishlist.objects.filter(user_name=userdeatails,products_id=product)
+    if wishlist_details:
+        wishlist_details.delete()
+    return JsonResponse('success', safe=False)
+
+def add_guest_wishlist(request):
+    data=json.loads(request.body)
+    id = data['productid']
+    product = products.objects.get(pk=id)
+    if request.session.has_key('guest_wish'):
+        if wishlist.objects.filter(guest_wishlist=request.session['guest_wish'],products_id=product):
+            messages.error(request, "item already in your wishlist")
+        else:
+            wishlist.objects.create(guest_wishlist=request.session['guest_wish'],products_id=product)
+    else:
+        guest_wishlist=str(uuid.uuid4())
+        request.session['guest_wish']=guest_wishlist
+        wishlist.objects.create(guest_wishlist=guest_wishlist,products_id=product)
+    return JsonResponse('success', safe=False)
+
+
+def remove_guest_wishlist(request):
+    data=json.loads(request.body)
+    id = data['productid']
+    product = products.objects.get(pk=id)
+    guest_details = request.session['guest_wish']
+    wishlist_details=wishlist.objects.filter(guest_wishlist=guest_details,products_id=product)
+    if wishlist_details:
+        wishlist_details.delete()
+    return JsonResponse('success', safe=False)
+
+def wishlist_handler(request):
+    if request.session.has_key('guest_wish'):
+        data = wishlist.objects.filter(guest_wishlist=request.session['guest_wish'])
+        username=User.objects.get(username=request.user)
+        for guestuser in data:
+            product = products.objects.get(pk=guestuser.products_id_id)
+            if wishlist.objects.filter(user_name=username,products_id=product.id):
+                guestuser.delete()
+            else:
+                guestuser.user_name=username.username
+                guestuser.save()
+        del request.session['guest_wish']
+        return redirect(home)
+    else:
+        return redirect(home)
+
+
+def wishlist_count(request):
+    if request.session.has_key('logged_in'):
+            wish_count=wishlist.objects.filter(user_name=request.user).count()
+    else:
+        if request.session.has_key('guest_wish'):
+            wish_count=wishlist.objects.filter(guest_wishlist=request.session.get('guest_wish')).count()
+        else:
+            wish_count=0
+    return wish_count

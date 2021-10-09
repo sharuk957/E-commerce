@@ -53,3 +53,7 @@ class coupon(models.Model):
     expiry_time = models.TimeField()
 
     
+class user_coupon(models.Model):
+    user_name= models.ForeignKey(User,on_delete=models.CASCADE)
+    coupon_code=models.ForeignKey(coupon,on_delete=models.CASCADE)
+    status = models.CharField(max_length=100)

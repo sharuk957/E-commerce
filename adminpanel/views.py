@@ -13,6 +13,10 @@ from django.http import JsonResponse
 from django.db.models import Sum
 import base64
 import uuid
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+import csv
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def adminlogin(request):
@@ -516,9 +520,10 @@ def coupon_edit(request,id):
         return render(request, 'admin/edit_coupon.html',{'coupons':coupons})
 
 
-def coupon_delete(request, id):
-    coupons = coupon.objects.get(id=id)
-    coupons.delete()
+def coupon_delete(request,id):
+    if coupon.objects.filter(id=id):
+        coupons = coupon.objects.get(id=id)
+        coupons.delete()
     return redirect(couponmanagement)
 
 
@@ -526,8 +531,8 @@ def coupon_delete(request, id):
 def check_validity(request):
     date = datetime.datetime.now().date()
     time = datetime.datetime.now().time()
-    offers = offer.objects.filter(expiry_date__gte=date,expiry_time__gte=time)
-    coupons = coupon.objects.filter(expiry_date__gte=date,expiry_time__gte=time)
+    offers = offer.objects.filter(expiry_date__lte=date,expiry_time__lte=time)
+    coupons = coupon.objects.filter(expiry_date__lte=date,expiry_time__lte=time)
     coupons.delete()
     offers.delete()
     return JsonResponse('success',safe=False)
@@ -536,12 +541,42 @@ def sales_report(request):
     if request.method == 'POST':
         from_date = request.POST.get('from')
         to_date = request.POST.get('to')
-        # datetime.Combine(from_date, datetime.min.time())
-        # datetime.combine(to_date, datetime.min.time())
         report = orders.objects.filter(date__range=[from_date, to_date])
-        print(report)
-        return render(request, 'admin/salesreport.html',{'orders_data':report})
+        return render(request, 'admin/salesreport.html',{'orders_data':report,'from':from_date,'to':to_date})
     else:
         report = orders.objects.all()
         return render(request, 'admin/salesreport.html',{'orders_data':report}) 
     
+def render_pdf_view(request,from_,to_):
+    template_path = 'admin/pdf_template.html'
+    report = orders.objects.filter(date__range=[from_, to_])
+    context = {'orders_data':report}
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+
+def render_csv_view(request,from_,to_):
+    response=HttpResponse(content_type='text/csv')
+    response['Content-Disposition']='attachment; filename=salesReport.csv'
+
+    writer = csv.writer(response)
+    writer.writerow(["Order ID", "User", "Product","Quantity","Price", "Payment Method", "status", "Date"])
+    
+    month_orders = orders.objects.filter(date__range=[from_, to_])
+    for mro in month_orders:
+        writer.writerow([mro.id, mro.user_name, mro.products.product_name, mro.quantity, mro.total, mro.payment_method, mro.status,mro.date])
+    
+    return response

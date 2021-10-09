@@ -1,0 +1,80 @@
+{% extends 'user/login.html' %} {% load static %} {% block content %}
+<div class="breadcrumb-area bg-gray">
+    <div class="container">
+        <div class="breadcrumb-content text-center">
+            <ul>
+                <li>
+                    <a href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="active">wishlist Page </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="cart-main-area pt-115 pb-120">
+    <div class="container-fluid">
+        {% if wish_count > 0 %}
+        <h3 class="cart-page-title text-center pb-4" style="color: red;">Your wishlist</h3>
+        <div class="row">
+            <div class="col-lg-8 col-md-12 col-sm-12 col-12">
+                <form action="#">
+                    <div class="table-content table-responsive cart-table-content">
+                        <table class="table-content table-responsive cart-table-content">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>Unit Price</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for wish in wishlists %}
+                                <tr>
+                                    <td class="product-thumbnail">
+                                        <a href="{% url 'oneproduct' wish.products_id.id %}"><img src="{{wish.products_id.image1.url}}" alt="" width="100" height="100"></a>
+                                    </td>
+                                    <td class="product-name"><a href="{% url 'oneproduct' wish.products_id.id %}">{{wish.products_id.product_name}}</a></td>
+                                    <td class="product-price-cart"><span class="amount">{% if wish.products_id.product_offer %}{{wish.products_id.product_offer_price}}{% else %}{{wish.products_id.price}}{% endif %}</span></td>
+                                    <td class="product-quantity pro-details-quality">
+                                        <!-- <div class=" cart-plus-minus choose" data-product={{cart.products_id.id}} data-value1={{cart.quantity}}>
+                                            <input class="cart-plus-minus-box one" type=" text" value=" {{cart.quantity}}">
+                                        </div> -->
+                                    </td>
+                                    <td class="product-remove mywishlist" data-product_id={{wish.products_id.id}} data-action="delete">
+                                        <button style="border: none;"><i class=" icon_close"></i></button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- <div class="row">
+                        <div class="col-lg-12">
+                            <div class="cart-shiping-update-wrapper">
+                                <div class="cart-shiping-update">
+                                    <a href="{% url 'product' %}">Continue Shopping</a>
+                                </div>
+                                <div class="cart-clear">
+                                    <button>Update Cart</button>
+                                    <a href="#">Clear Cart</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                </form>
+            </div>
+
+        </div>
+        {% else %}
+        <div class="text-center">
+            <h4 style="color: red;">Your wishlist is empty</h4>
+        </div>
+        {% endif %} {% if messages %} {% for message in messages %} {% if message.tags == "success" %}
+        <div class="alert alert-success">{{ message }}</div>
+        {% elif message.tags == "error" %}
+        <div class="alert alert-danger">{{ message }}</div>
+        {% endif %} {% endfor %} {% endif %}
+    </div>
+</div>
+{% endblock %}
