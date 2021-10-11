@@ -535,6 +535,9 @@ def edit_user(request):
         currentpass=request.POST['currentpass']
         newpass=request.POST['newpass']
         confpass=request.POST['confpass']
+        mobile_num = request.POST.get('mobile')
+        if mobile_num:
+            user_detail.mobile_num=mobile_num
         if check == '1' :
             if check_password(currentpass,user_detail.password) :
                 if confpass == newpass:
