@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'userlogin',
     'adminpanel',
+    # 'social_django',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'ecommerce.urls'
@@ -64,6 +66,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'social_django.context_processors.backends',
+                # 'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -71,6 +75,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecommerce.wsgi.application'
 
+
+
+# AUTHENTICATION_BACKENDS = (
+#     'social_core.backends.facebook.FacebookOAuth2',
+#     'social_core.backends.twitter.TwitterOAuth',
+#     'social_core.backends.github.GithubOAuth2',
+
+#     'django.contrib.auth.backends.ModelBackend',
+# )
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -133,3 +146,13 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10242880
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ACCOUNT_SID = 'AC3ea2ba7492f76efd6a817d9ece427809'
+ACCOUNT_TOKEN = '0a89bc01ba2b61e0c7008ceeb152a69c'
+
+# LOGIN_URL = 'login'
+# LOGOUT_URL = 'logout'
+# LOGIN_REDIRECT_URL = 'home'
+
+# SOCIAL_AUTH_FACEBOOK_KEY = '340106817868382'
+# SOCIAL_AUTH_FACEBOOK_SECRET = 'c9745658760a7ca281d4d22657b8658e'

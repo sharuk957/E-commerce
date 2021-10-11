@@ -33,5 +33,7 @@ urlpatterns = [
     path('add_guest_wishlist/',views.add_guest_wishlist, name='add_guest_wishlist'),
     path('remove_guest_wishlist/',views.remove_guest_wishlist, name='remove_guest_wishlist'),
     path('wishlist_handler/',views.wishlist_handler, name='wishlist_handler'),
+    path('otp_login/',views.login_with_otp, name='otp_login'),
+    path('check_otp/',views.check_otp, name='check_otp'),
     # path('contact/', views.product),
 ]

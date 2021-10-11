@@ -1,0 +1,85 @@
+{% extends 'user/login.html' %} {% load static %}{% block content %}
+<div class="breadcrumb-area bg-gray">
+    <div class="container">
+        <div class="breadcrumb-content text-center">
+            <ul>
+                <li>
+                    <a href="{%url 'home'%}">Home</a>
+                </li>
+                <li class="active">OTP login</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="login-register-area pt-115 pb-120">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 col-md-12 ms-auto me-auto">
+                <div class="login-register-wrapper">
+                    <div class="login-register-tab-list nav">
+                        <a class="active" data-bs-toggle="tab" href="#lg1">
+                            <h4> OTP login </h4>
+                        </a>
+                        <!-- <a data-bs-toggle="tab" href="#lg2">
+                                    <h4> register </h4>
+                                </a> -->
+                    </div>
+                    <div class="tab-content">
+                        <div id="lg1" class="tab-pane active">
+                            <div class="login-form-container">
+                                <div class="login-register-form">
+                                    <form action="{% url 'otp_login' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="text" name="mobile" placeholder="mobile number" required>
+
+                                        <div class="button-box">
+                                            <div class="login-toggle-btn">
+                                                <input type="checkbox">
+                                                <label>Remember me</label>
+                                                <a href="#">Forgot Password?</a>
+                                            </div>
+                                            <button type="submit">Login</button>
+                                        </div>
+                                        <div class="pt-5">
+                                            <span>New here? </span><a href="{%url 'register' %}"><b
+                                                            style="color: red; padding-left: 5px;">create an
+                                                            account</b></a>
+                                        </div>
+                                        <div class=" pt- 5 ">
+                                            <span>have username and password</span>?<a href="{% url 'login' %}"><b
+                                                    style="color: red; padding-left: 5px; ">login</b></a>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% if messages %} {% for message in messages %} {% if message.tags == "success" %}
+                        <div class="alert alert-success">{{ message }}</div>
+                        {% elif message.tags == "error" %}
+                        <div class="alert alert-danger">{{ message }}</div>
+                        {% endif %} {% endfor %} {% endif %}
+                        <!-- <div id="lg2" class="tab-pane">
+                                    <div class="login-form-container">
+                                        <div class="login-register-form">
+                                            <form action="register" method="post">
+                                                {% csrf_token %}
+                                                <input type="text" name="user-firstname" placeholder="First name">
+                                                <input type="text" name="user-lastname" placeholder="Last name">
+                                                <input type="text" name="user-name" placeholder="Username">
+                                                <input type="password" name="user-password" placeholder="Password">
+                                                <input type="password" name="confirm_password" placeholder="confirm Password">
+                                                <input name="user-email" placeholder="Email" type="email">
+                                                <div class="button-box">
+                                                    <button type="submit">Register</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

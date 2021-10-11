@@ -447,9 +447,15 @@
                                                             style="color: red; padding-left: 5px;">create an
                                                             account</b></a>
                                                 </div>
+                                                <div class="pt-5">
+                                                    <span>OTP Login </span><a href="{%url 'otp_login' %}"><b
+                                                            style="color: red; padding-left: 5px;">login with otp</b></a>
+                                                </div>
                                             </form>
                                         </div>
+                                       
                                     </div>
+                                     <!-- <a href="{% url 'social:begin' 'facebook' %}">Login with Facebook</a> -->
                                 </div>
                                 {% if messages %} {% for message in messages %} {% if message.tags == "success" %}
                                 <div class="alert alert-success">{{ message }}</div>
@@ -561,6 +567,8 @@
     <!-- Main JS -->
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/ajax.js' %}"></script>
+   <script src="{% static 'js/address_validation.js' %}"></script>
+
     <script>
         var url = '/newadmin/check_validity/'
         $(document).ready(function() {
@@ -666,7 +674,7 @@
         var payment_amount
         document.getElementById('rzp-button1').onclick = function(e) {
             e.preventDefault();
-            
+
             url = '/razorpayment/{{product}}'
             fetch(url, {
                     method: 'POST',

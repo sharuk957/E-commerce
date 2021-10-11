@@ -19,6 +19,7 @@ from django.contrib.auth import update_session_auth_hash
 import base64
 from django.core.files.base import ContentFile
 
+from .twilio import send_sms
 
 def home(request):
     product = products.objects.all()
@@ -740,3 +741,55 @@ def wishlist_count(request):
         else:
             wish_count=0
     return wish_count
+
+
+
+
+def login_with_otp(request):
+    if request.method == 'POST':
+        mobile_num=request.POST.get('mobile')
+        user = userimage.objects.filter(mobile_num=mobile_num)
+        if user:
+            otp = gen_otp()
+            user1=user.first()
+            user1.otp = otp
+            user1.save()
+            message = "pls verify your mobile number. OTP: {}" .format(otp)
+            send_sms(message, mobile_num)
+            return render(request, 'user/enter_otp.html',{'mobile':mobile_num})
+        else:
+            messages.error(request, "invalid mobile number")
+    return render(request, 'user/otp_login.html')
+
+def check_otp(request):
+    if request.method == 'POST':
+        otp_num=request.POST.get('otp')
+        mobile_num=request.POST.get('mobile')
+        user = userimage.objects.filter(mobile_num=mobile_num)
+        
+        if user is not None:
+            user1=user.first()
+            main_user = User.objects.get(id=user1.user_name.id)
+            if user1.otp == otp_num:
+                login(request,main_user)
+                request.session['logged_in']= True
+                if request.session.has_key('guest'):
+                    return redirect(guesthandler)
+                else:
+                    return redirect('home')
+            else:
+                messages.error(request, "invalid otp")
+        else:
+            messages.error(request, "invalid otp")
+    else:
+        return redirect(userlogin)
+    
+
+def gen_otp():
+    import math, random
+    digits = '1234567890'
+    OTP = ''
+    for i in range(6):
+        OTP += digits[math.floor(random.random() * 10)]
+
+    return OTP

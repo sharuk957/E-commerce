@@ -77,50 +77,68 @@
                                 <div class="col-lg-6 col-md-6">
                                     <div class="billing-info mb-20">
                                         <label>First Name <abbr class="required"  title="required">*</abbr></label>
-                                        <input type="text" name="first_name" required>
+                                        <input type="text" name="first_name" id="address-firstname" required>
+                                        <div id="check1" style="color: red;">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
                                     <div class="billing-info mb-20">
                                         <label>Last Name <abbr class="required" title="required">*</abbr></label>
-                                        <input type="text" name="last_name" required>
+                                        <input type="text" name="last_name" id="address-lastname" required>
+                                        <div id="check5" style="color: red;">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="billing-info mb-20">
                                         <label>Country <abbr class="required" title="required">*</abbr></label>
-                                        <input type="text" name="place" required>
+                                        <input type="text" name="place" id="address-country" required>
+                                        <div id="check3" style="color: red;">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="billing-info mb-20">
                                         <label>Street Address <abbr class="required" title="required">*</abbr></label>
-                                        <input class="billing-address" placeholder="House number and street name" type="text" name="house" required>
-                                        <input placeholder="Apartment, suite, unit etc." type="text" name="apartment" required>
+                                        <input class="billing-address" placeholder="House number and street name" id="address-house" type="text" name="house" required>
+                                        <div id="check2" style="color: red;">
+                                        </div>
+                                        <input placeholder="Apartment, suite, unit etc." type="text" id="address-apartment" name="apartment" required>
+                                        <div id="check9" style="color: red;">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="billing-info mb-20">
                                         <label>Town / City <abbr class="required" title="required">*</abbr></label>
-                                        <input type="text" name="city" required>
+                                        <input type="text" name="city" id="address-city" required>
+                                        <div id="check6" style="color: red;">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-md-12">
                                     <div class="billing-info mb-20">
                                         <label>State  <abbr class="required" title="required">*</abbr></label>
-                                        <input type="text" name="state" required>
+                                        <input type="text" name="state" id="address-state" required>
+                                        <div id="check4" style="color: red;">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-md-12">
                                     <div class="billing-info mb-20">
                                         <label>Postcode / ZIP <abbr class="required" title="required">*</abbr></label>
-                                        <input type="text" name="pin_code" required>
+                                        <input type="text" name="pin_code" id="address-pin_code" required>
+                                        <div id="check7" style="color: red;">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-md-12">
                                     <div class="billing-info mb-20">
                                         <label>Phone <abbr class="required" title="required">*</abbr></label>
-                                        <input type="text" name="phn_no" required>
+                                        <input type="text" name="phn_no" id="address-phn_no" required>
+                                        <div id="check8" style="color: red;">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +149,7 @@
                         </div>
                     </div>
                     <div class="Place-order pt-3">
-                        <button class="p-1" style="background-color: red; color: white;width: 100px; border-style: none; border-radius: 5px;">
+                        <button class="p-1" style="background-color: red; color: white;width: 100px; border-style: none; border-radius: 5px;" id="adress-submit">
                             <b>submit</b>
                             </button>
                     </div>
