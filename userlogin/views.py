@@ -39,8 +39,9 @@ def userlogin(request):
             request.session['logged_in'] = True
             if request.session.has_key('guest'):
                 return redirect(guesthandler)
-            else:
-                return redirect('home')
+            if request.session.has_key('guest_wish'):
+                return redirect(wishlist_handler)
+            return redirect(home)
         else:
             messages.error(request, "invalid user name or password")
             return redirect('login')
@@ -317,9 +318,15 @@ def guesthandler(request):
                 guestuser.user_name=username.username
                 guestuser.save()
         del request.session['guest']
-        return redirect(home)
+        if request.session.has_key('guest_wish'):
+            return redirect(wishlist_handler)
+        else:
+            return redirect(home)
     else:
-        return redirect(home)
+        if request.session.has_key('guest_wish'):
+            return redirect(wishlist_handler)
+        else:
+            return redirect(home)
 
 
 def cart_count(request):
@@ -468,7 +475,7 @@ def profile(request):
     count= cart_count(request)
     user_detail=User.objects.get(username=request.user)
     user_address=address.objects.filter(user_name=request.user)
-    user_image=userimage.objects.get(user_name=user_detail)
+    user_image=userimage.objects.filter(user_name=user_detail).first()
     return render(request, 'user/profile.html',{'user_detail':user_detail,'count':count,'user_address':user_address,'user_image':user_image,'wish_count':wish_count})
 
 @login_required(login_url='login')  
@@ -536,13 +543,17 @@ def edit_user(request):
         newpass=request.POST['newpass']
         confpass=request.POST['confpass']
         mobile_num = request.POST.get('number')
-        if mobile_num:
-            additional_details = userimage.objects.filter(mobile_num=mobile_num)
+        additional_details = userimage.objects.filter(mobile_num=mobile_num).first()
+        if mobile_num!=additional_details.mobile_num:
             if additional_details:
                 messages.error(request,"mobile number already exist")
             else:
-                additional_details.mobile_num=mobile_num
-                additional_details.save()
+                user_add = userimage.objects.filter(user_name=request.user).first()
+                if user_add:
+                    user_add.mobile_num=mobile_num
+                    user_add.save()
+                else:
+                    userimage.objects.create(user_name=request.user,mobile_num=mobile_num,referral_code=request.user.username+" "+str(request.user.id),wallet_cash=0)
         if check == '1' :
             if check_password(currentpass,user_detail.password) :
                 if confpass == newpass:
