@@ -46,7 +46,7 @@ class userimage(models.Model):
     profileimage = models.ImageField(upload_to='pics',null=True)
     referral_code = models.CharField(max_length=150)
     wallet_cash = models.IntegerField()
-    mobile_num = models.CharField(max_length=100,null=True)
+    mobile_num = models.CharField(max_length=100,null=True, blank=True)
     otp = models.CharField(max_length=100,null=True, blank=True)
 
 class wishlist(models.Model):

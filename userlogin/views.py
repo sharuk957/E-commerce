@@ -538,22 +538,27 @@ def edit_user(request):
         check=request.POST['change']
         user_detail.first_name=request.POST['f-name']
         user_detail.last_name=request.POST['l-name']
-        user_detail.email=request.POST['e-mail']
+        if user_detail.email != request.POST['e-mail']:
+            if User.objects.filter(email=request.POST['e-mail']):
+                messages.error(request,"email already exist")
+            else:
+                user_detail.email=request.POST['e-mail']
         currentpass=request.POST['currentpass']
         newpass=request.POST['newpass']
         confpass=request.POST['confpass']
         mobile_num = request.POST.get('number')
-        additional_details = userimage.objects.filter(mobile_num=mobile_num).first()
-        if mobile_num!=additional_details.mobile_num:
-            if additional_details:
-                messages.error(request,"mobile number already exist")
-            else:
-                user_add = userimage.objects.filter(user_name=request.user).first()
+        additional_details = userimage.objects.filter(user_name=request.user).first()
+        if additional_details:
+            
+            if additional_details.mobile_num != mobile_num:
+                user_add = userimage.objects.filter(mobile_num=mobile_num).first()
                 if user_add:
-                    user_add.mobile_num=mobile_num
-                    user_add.save()
+                    messages.error(request,"mobile number already exist")
                 else:
-                    userimage.objects.create(user_name=request.user,mobile_num=mobile_num,referral_code=request.user.username+" "+str(request.user.id),wallet_cash=0)
+                    additional_details.mobile_num = mobile_num
+                    additional_details.save()
+        else:
+            userimage.objects.create(user_name=request.user,mobile_num=mobile_num,referral_code=request.user.username+" "+str(request.user.id),wallet_cash=0)
         if check == '1' :
             if check_password(currentpass,user_detail.password) :
                 if confpass == newpass:
