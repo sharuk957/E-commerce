@@ -535,9 +535,14 @@ def edit_user(request):
         currentpass=request.POST['currentpass']
         newpass=request.POST['newpass']
         confpass=request.POST['confpass']
-        mobile_num = request.POST.get('mobile')
+        mobile_num = request.POST.get('number')
         if mobile_num:
-            user_detail.mobile_num=mobile_num
+            additional_details = userimage.objects.filter(mobile_num=mobile_num)
+            if additional_details:
+                messages.error(request,"mobile number already exist")
+            else:
+                additional_details.mobile_num=mobile_num
+                additional_details.save()
         if check == '1' :
             if check_password(currentpass,user_detail.password) :
                 if confpass == newpass:
