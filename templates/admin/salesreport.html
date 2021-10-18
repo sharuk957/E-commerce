@@ -20,7 +20,7 @@
                         <div class="row">
                             <div class="col-lg-5 col-6 col-md-3">
                                 <b>FROM</b>
-                                <input type="date" class="form-control" required name="from">
+                                <input type="date" class="form-control" required name="from" onchange="fromdate(this)">
                             </div>
                             <div class="col-lg-5 col-6 col-md-3">
                                 <b>TO</b>
@@ -100,7 +100,16 @@
         </div>
         <!-- card end// -->
 </section>
+<script>
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementsByName("to")[0].setAttribute('max', today);
 
+    function fromdate(h) {
+        last_date = h.value
+        alert(last_date)
+        document.getElementsByName("to")[0].setAttribute('min', last_date)
+    }
+</script>
 <!-- conte
 content-mnt-main end// -->
 {% endblock %}
