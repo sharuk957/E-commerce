@@ -397,7 +397,7 @@ def delete_product(request, id):
     return redirect(productlist)
 
 #order management
-
+@login_required(login_url='adminlogin')
 def ordermanagment(request):
     if request.method == 'POST':
         data=json.loads(request.body)
@@ -410,6 +410,7 @@ def ordermanagment(request):
     else:
         order_data = orders.objects.all().order_by("id")
         return render(request,'admin/ordermanagment.html',{'orders_data':order_data})
+
 
 def dropdownview(request):
     data=json.loads(request.body)
@@ -428,6 +429,7 @@ def dropdownview(request):
         # return render(request,'branddroplist.html',{'brand_data':brand_name})
         return JsonResponse(list(brand_name.values('id','brand_name')),safe=False)
 
+@login_required(login_url='adminlogin')
 def offermanagement(request):
     if request.method == 'POST':
         offer_name = request.POST.get('Offer_name')
@@ -440,6 +442,7 @@ def offermanagement(request):
         offers = offer.objects.all()
         return render(request, 'admin/offer.html',{'offers': offers})
 
+@login_required(login_url='adminlogin')
 def offer_edit(request,id):
     if request.method == 'POST':
         offers = offer.objects.get(id=id)
@@ -453,12 +456,13 @@ def offer_edit(request,id):
         offers = offer.objects.get(id=id)
         return render(request, 'admin/edit_offer.html',{'offer':offers})
 
-
+@login_required(login_url='adminlogin')
 def offer_delete(request, id):
     offers = offer.objects.get(id=id)
     offers.delete()
     return redirect(offermanagement)
 
+@login_required(login_url='adminlogin')
 def add_product_offer(request):
     if request.method == 'POST':
         id = request.POST.get('product_id')
@@ -473,7 +477,7 @@ def add_product_offer(request):
 
 
 
-
+@login_required(login_url='adminlogin')
 def add_category_offer(request):
     if request.method == 'POST':
         id = request.POST.get('sub_category_id')
@@ -494,6 +498,7 @@ def add_category_offer(request):
     return redirect(subcategories)
 
 
+@login_required(login_url='adminlogin')
 def couponmanagement(request):
     if request.method == 'POST':
         minimal_rate = request.POST.get('minimal_rate')
@@ -506,6 +511,7 @@ def couponmanagement(request):
         coupons = coupon.objects.all()
         return render(request, 'admin/coupon.html',{'coupons': coupons})
 
+@login_required(login_url='adminlogin')
 def coupon_edit(request,id):
     if request.method == 'POST':
         coupons = coupon.objects.get(id=id)
@@ -520,6 +526,7 @@ def coupon_edit(request,id):
         return render(request, 'admin/edit_coupon.html',{'coupons':coupons})
 
 
+@login_required(login_url='adminlogin')
 def coupon_delete(request,id):
     if coupon.objects.filter(id=id):
         coupons = coupon.objects.get(id=id)
@@ -527,7 +534,7 @@ def coupon_delete(request,id):
     return redirect(couponmanagement)
 
 
-
+@login_required(login_url='adminlogin')
 def check_validity(request):
     date = datetime.datetime.now().date()
     time = datetime.datetime.now().time()
@@ -537,6 +544,8 @@ def check_validity(request):
     offers.delete()
     return JsonResponse('success',safe=False)
 
+
+@login_required(login_url='adminlogin')
 def sales_report(request):
     if request.method == 'POST':
         from_date = request.POST.get('from')
@@ -546,7 +555,9 @@ def sales_report(request):
     else:
         report = orders.objects.all()
         return render(request, 'admin/salesreport.html',{'orders_data':report}) 
-    
+ 
+ 
+@login_required(login_url='adminlogin')   
 def render_pdf_view(request,from_,to_):
     template_path = 'admin/pdf_template.html'
     report = orders.objects.filter(date__range=[from_, to_])
@@ -567,7 +578,7 @@ def render_pdf_view(request,from_,to_):
     return response
 
 
-
+@login_required(login_url='adminlogin')
 def render_csv_view(request,from_,to_):
     response=HttpResponse(content_type='text/csv')
     response['Content-Disposition']='attachment; filename=salesReport.csv'
