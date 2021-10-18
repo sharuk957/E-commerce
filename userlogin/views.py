@@ -546,7 +546,7 @@ def edit_user(request):
         currentpass=request.POST['currentpass']
         newpass=request.POST['newpass']
         confpass=request.POST['confpass']
-        mobile_num = request.POST.get('number')
+        mobile_num = request.POST['number']
         additional_details = userimage.objects.filter(user_name=request.user).first()
         if additional_details:
             
