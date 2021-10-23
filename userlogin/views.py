@@ -204,7 +204,7 @@ def checkout(request,id=-1):
   
 @login_required(login_url='login')      
 def my_orders(request): 
-    order_list=orders.objects.filter(user_name=User.objects.get(username=request.user)).order_by("date")
+    order_list=orders.objects.filter(user_name=User.objects.get(username=request.user)).order_by("-date")
     wish_count = wishlist_count(request)
     count= cart_count(request)
     return render(request,'user/orders.html',{'order_list':order_list,'count':count,'wish_count':wish_count})
@@ -213,7 +213,7 @@ def my_orders(request):
 @login_required(login_url='login')
 def cancel_order(request,id):
     order_deatail = orders.objects.get(id=id)
-    order_deatail.status = 'Cancelled'
+    order_deatail.status = 'userCancelled'
     order_deatail.save()
     return redirect(my_orders)
 

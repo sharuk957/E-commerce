@@ -10,18 +10,36 @@
     <div class="card mb-4">
         <header class="card-header">
             <div class="row gx-3">
-                <div class="col-lg-4 col-md-6 me-auto">
-                    <input type="text" placeholder="Search..." class="form-control">
+                <div class="col-lg-2 col-md-6 me-auto">
+
+                    <input type="text" style="margin-top: 22px;" placeholder="Search..." class="form-control">
                 </div>
-                <!-- <div class="col-lg-2 col-6 col-md-3">
-                    <input type="date" class="form-control">
+                <div class="col-lg-6 col-md-6 me-auto">
+                    <form action="{% url 'monthlyreport' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-5 col-6 col-md-3">
+                                <b>FROM</b>
+                                <input type="month" class="form-control" required name="from" onchange="fromdate(this)">
+                            </div>
+                            <div class="col-lg-5 col-6 col-md-3">
+                                <b>TO</b>
+                                <input type="month" class="form-control" required name="to">
+                            </div>
+                            <div class="col-lg-2 col-6 col-md-3 ">
+                                <button class="btn bg-primary" style="margin-top: 22px;" type="submit">Search</button>
+                            </div>
+
+                        </div>
+                    </form>
+
                 </div>
-                <div class="col-lg-2 col-6 col-md-3">
-                    <input type="date" class="form-control">
+                {% if from or to %}
+                <div class="col-lg-2 col-md-6 me-auto">
+                    <a href="{% url 'monthlyconvertreport' from to %}"><i class="fa fa-file-pdf" style="font-size:40px;margin-top: 22px;color: red;"></i></a>
+                    <a style="margin-top: 22px;" href="{% url 'monthlyconvertreportcsv' from to %}"><i class="fas fa-file-csv" style="font-size:40px;margin-top: 22px; color:green;"></i></a>
                 </div>
-                <div class="col-lg-2 col-6 col-md-3">
-                    <button class="btn bg-primary">Search</button>
-                </div> -->
+                {% endif %}
             </div>
         </header>
         <!-- card-header end// -->
@@ -30,26 +48,28 @@
                 <table class="table table-hover text-center">
                     <thead>
                         <tr>
+                            <th>NO</th>
                             <th>#ID</th>
                             <th scope="col">Name</th>
-                            <th scope="col"> </th>
                             <th scope="col">product details</th>
                             <th scope="col">quantity</th>
                             <th scope="col">Total</th>
+                            <th scope="col">Payment Method</th>
                             <th scope="col">Status</th>
                             <th scope="col">Date</th>
-                            <th>change order status</th>
+
                         </tr>
                     </thead>
                     <tbody>
                         {% for order in orders_data %}
                         <tr>
+                            <td>{{forloop.counter}}</td>
                             <td>NOR{{order.id}}</td>
                             <td>{{order.user_name.username}}</td>
-                            <td><img src="{{order.products.image1.url}}" width="100px" height="100px" alt=""></td>
                             <td><b>{{order.products.product_name}}</b></td>
                             <td>{{order.quantity}}</td>
                             <td>{{order.total}}</td>
+                            <td>{{order.payment_method}}</td>
                             <td>{% if order.status == 'Cancelled' %}
                                 <span class="badge rounded-pill alert-warning">{{order.status}}</span> {% elif order.status == 'delivered' %}
                                 <span class="badge rounded-pill alert-success">{{order.status}}</span> {% else %}
@@ -68,17 +88,6 @@
                             <!-- dropdown //end -->
                             </td>
 
-                            <td>
-                                {%if order.status != 'userCancelled'%}
-                                <select class="form-select status-change" data-id={{order.id}}>
-                                    <option>  </option>
-									<option>pending</option>
-									<option>delivered</option>
-									<option>Shipped</option>
-									<option>Cancelled</option>
-	
-								</select> {%endif%}
-                            </td>
                         </tr>
                         {% endfor %}
                         <div>
@@ -91,7 +100,19 @@
         </div>
         <!-- card end// -->
 </section>
+<script>
+    var today = new Date()
+    month = today.getMonth() + 1;
+    year = today.getFullYear();
+    newdate = year + '-' + month
+    document.getElementsByName("to")[0].setAttribute('max', newdate);
+    document.getElementsByName("from")[0].setAttribute('max', newdate);
 
+    function fromdate(h) {
+        last_date = h.value
+        document.getElementsByName("to")[0].setAttribute('min', last_date)
+    }
+</script>
 <!-- conte
 content-mnt-main end// -->
 {% endblock %}

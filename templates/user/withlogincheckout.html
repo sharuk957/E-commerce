@@ -104,11 +104,12 @@
                                 </div>
                                 <div class="your-order-info order-total">
                                     <ul>
-                                    <li>Total <span>{{new}} </span></li>
-                                    <li>offer_price <span>{{coupon.coupon_code.percentage}} </span></li>
+                                        <li>Total <span>{{new}} </span></li>
+                                        <li>Offer price <span>{{new}} </span></li>
+                                        <li>coupon offer <span>{{coupon.coupon_code.percentage}} </span></li>
                                         <li>sub Total <span>{{total}} </span></li>
-                                    <ul id="coupon_succes">
-                                    </ul>
+                                        <ul id="coupon_succes">
+                                        </ul>
                                 </div>
                             </div>
 
@@ -151,19 +152,17 @@
                                 <div class="title-wrap">
                                     <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
                                 </div>
-                                
+
 
                                 <div class="discount-code">
-                                {% if coupon %}
-                                <input type="text" name="offer_code" hidden="true" value="{{ coupon.coupon_code.coupon_code }}">
-                                {% else %}
+                                    {% if coupon %}
+                                    <input type="text" name="offer_code" hidden="true" value="{{ coupon.coupon_code.coupon_code }}"> {% else %}
                                     <p>Enter your coupon code if you have one.</p>
-                                    
-                                        <input type="text" id="couponCode" >
-                                        <button class="cart-btn-2" type="button" id="couponClick">Apply Coupon</button>
-                                        {% endif %}
+
+                                    <input type="text" id="couponCode">
+                                    <button class="cart-btn-2" type="button" id="couponClick">Apply Coupon</button> {% endif %}
                                 </div>
-                                
+
                             </div>
                         </div>
 
@@ -178,13 +177,17 @@
     <script>
         var btn = document.getElementById("couponClick");
         btn.onclick = function() {
-            var total={{total}}
+            var total = {
+                {
+                    total
+                }
+            }
             var coupon_code = document.getElementById("couponCode").value;
             console.log(coupon_code)
             coupon_check(total, coupon_code)
         }
 
-        function coupon_check(total,coupon_code) {
+        function coupon_check(total, coupon_code) {
             var url = '/coupon_check/'
             fetch(url, {
                     method: 'POST',
@@ -204,8 +207,7 @@
                     console.log(data)
                     if (data.success) {
                         location.reload()
-                    }
-                    else {
+                    } else {
                         alert(data.value)
                     }
                 })

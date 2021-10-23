@@ -549,18 +549,27 @@ def check_validity(request):
 def sales_report(request):
     if request.method == 'POST':
         from_date = request.POST.get('from')
-        to_date = request.POST.get('to')
+        print(request.POST.get('to'))
+        date=request.POST.get('to').split('-')
+        print(date)
+        to_date = datetime.datetime(int(date[0]),int(date[1]),int(date[2]))+datetime.timedelta(days=1)
+        print(to_date)
         report = orders.objects.filter(date__range=[from_date, to_date])
         return render(request, 'admin/salesreport.html',{'orders_data':report,'from':from_date,'to':to_date})
     else:
         report = orders.objects.all()
         return render(request, 'admin/salesreport.html',{'orders_data':report}) 
- 
- 
+    
+
 @login_required(login_url='adminlogin')   
 def render_pdf_view(request,from_,to_):
     template_path = 'admin/pdf_template.html'
-    report = orders.objects.filter(date__range=[from_, to_])
+    print(to_)
+    date=to_.split('-')
+    print(date)
+    to_date = datetime.datetime(int(date[0]),int(date[1]),int(date[2][:2]))+datetime.timedelta(days=1)
+    print(to_date)
+    report = orders.objects.filter(date__range=[from_, to_date])
     context = {'orders_data':report}
     # Create a Django response object, and specify content_type as pdf
     response = HttpResponse(content_type='application/pdf')
@@ -578,15 +587,69 @@ def render_pdf_view(request,from_,to_):
     return response
 
 
+    
+@login_required(login_url='adminlogin')
+def monthly_sales_report(request):
+    if request.method == 'POST':
+        from_date = request.POST.get('from')+"-01"
+        date=request.POST.get('to').split('-')
+        to_date = datetime.datetime(int(date[0]),(int(date[1])%12+1),1)
+        report = orders.objects.filter(date__range=[from_date, to_date])
+        return render(request, 'admin/monthlysalesreport.html',{'orders_data':report,'from':from_date,'to':to_date})
+    else:
+        report = orders.objects.all()
+        return render(request, 'admin/monthlysalesreport.html',{'orders_data':report}) 
+ 
+ 
+
+
 @login_required(login_url='adminlogin')
 def render_csv_view(request,from_,to_):
     response=HttpResponse(content_type='text/csv')
     response['Content-Disposition']='attachment; filename=salesReport.csv'
-
     writer = csv.writer(response)
     writer.writerow(["Order ID", "User", "Product","Quantity","Price", "Payment Method", "status", "Date"])
+    date=to_.split('-')
+    to_date=datetime.datetime(int(date[0]),int(date[1]),int(date[2][:2]))+datetime.timedelta(days=1)
+    month_orders = orders.objects.filter(date__range=[from_, to_date])
+    for mro in month_orders:
+        writer.writerow([mro.id, mro.user_name, mro.products.product_name, mro.quantity, mro.total, mro.payment_method, mro.status,mro.date])
     
-    month_orders = orders.objects.filter(date__range=[from_, to_])
+    return response
+
+
+
+@login_required(login_url='adminlogin')   
+def monthly_render_pdf_view(request,from_,to_):
+    template_path = 'admin/pdf_template.html'
+    date=to_.split('-')
+    to_date = datetime.datetime(int(date[0]),(int(date[1])%12+1),1)
+    report = orders.objects.filter(date__range=[from_, to_date])
+    context = {'orders_data':report}
+    # Create a Django response object, and specify content_type as pdf
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="report.pdf"'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+@login_required(login_url='adminlogin')
+def monthly_render_csv_view(request,from_,to_):
+    response=HttpResponse(content_type='text/csv')
+    response['Content-Disposition']='attachment; filename=salesReport.csv'
+    writer = csv.writer(response)
+    writer.writerow(["Order ID", "User", "Product","Quantity","Price", "Payment Method", "status", "Date"])
+    date=to_.split('-')
+    to_date = datetime.datetime(int(date[0]),(int(date[1])%12+1),1)
+    month_orders = orders.objects.filter(date__range=[from_, to_date])
     for mro in month_orders:
         writer.writerow([mro.id, mro.user_name, mro.products.product_name, mro.quantity, mro.total, mro.payment_method, mro.status,mro.date])
     

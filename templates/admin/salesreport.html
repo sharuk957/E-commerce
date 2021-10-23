@@ -103,6 +103,7 @@
 <script>
     var today = new Date().toISOString().split('T')[0];
     document.getElementsByName("to")[0].setAttribute('max', today);
+    document.getElementsByName("from")[0].setAttribute('max', today);
 
     function fromdate(h) {
         last_date = h.value
