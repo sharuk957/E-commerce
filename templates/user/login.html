@@ -536,7 +536,18 @@
     <script src="{% static 'js/main.js' %}"></script>
     <script src="{% static 'js/ajax.js' %}"></script>
     <script src="{% static 'js/address_validation.js' %}"></script>
-
+<script>
+    
+    function checkaddress(){
+        var addres=$('input[name="address"]:checked').val();
+        if (addres){
+            return true
+        }
+        else{
+            return false;
+        }
+    }
+</script>
     <script>
         var url = '/newadmin/check_validity/'
         $(document).ready(function() {
@@ -558,9 +569,19 @@
         })
     </script>
     <script>
-        $('.payment_option').click(function() {
+        $('.payment_option').click(function () {
+            paymentoption()
+        })
+        $('.address_option').click(function () {
+            paymentoption()
+        })
+    </script>
+    <script>
+        function paymentoption() {
             var payment = $('input[name="payment_method"]:checked').val();
-
+            var  checker=checkaddress()
+            if (checker){
+                $('#addmsg').html("")
             if (payment == 'Razorpay') {
                 $('#rzp-button1').removeAttr('hidden')
                 $('#COD_Button').attr('hidden', true)
@@ -574,7 +595,11 @@
                 $('#rzp-button1').attr('hidden', true)
                 $('#COD_Button').attr('hidden', true)
             }
-        })
+            }
+            else{
+                $('#addmsg').html("pls add or select address")
+            }
+        }
     </script>
     <script>
         function zoom(e) {
@@ -703,4 +728,4 @@
     </script>
 </body>
 
-</html
+</html>
