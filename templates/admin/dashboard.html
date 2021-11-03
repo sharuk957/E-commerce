@@ -80,13 +80,13 @@
                     <a class="menu-link" href="{% url 'offer_management' %}"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Offer managment</span>
                     </a>
-                 
+
                 </li>
                 <li class="menu-item ">
                     <a class="menu-link" href="{% url 'coupon_management' %}"> <i class="icon material-icons md-shopping_bag"></i>
                         <span class="text">Coupon managment</span>
                     </a>
-                    
+
                 </li>
                 <!-- <li class="menu-item"> 
 		<a class="menu-link" href="{% url 'categories' %}"><i class="icon fas fa-clipboard-list"></i>
@@ -152,14 +152,14 @@
       <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i> 
         <span class="text">Brands</span> </a> 
     </li> -->
-                
+
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="#"> <i class="icon fas fa-sign-out-alt"></i>
                         <span class="text">Sales Report</span>
                     </a>
                     <div class="submenu">
                         <a href="{% url 'report' %}">weekly Report</a>
-                        <a href="{% url 'monthlyreport' %}">Monthly Report</a>
+                        <a href="{% url 'monthly_report' %}">Monthly Report</a>
                     </div>
                 </li>
                 <li class="menu-item">
@@ -216,7 +216,7 @@
             </div>
         </header>
         {% block content %}
-        
+
         <section class="content-main">
             <div class="content-header">
                 <h2 class="content-title"> Dashboard </h2>
@@ -267,7 +267,7 @@
 
 
             <div class="row">
-                <div class="col-xl-7 col-lg-12" >
+                <div class="col-xl-7 col-lg-12">
                     <div class="card mb-4">
                         <article class="card-body">
                             <h5 class="card-title">Sale statistics</h5>
@@ -277,13 +277,24 @@
                             <script>
                                 // === include 'setup' then 'config' above ===
                                 var data = {
-                                    labels: [{% for label in category %}'{{label.sub_category_name}}', {% endfor %}
+                                    labels: [{ %
+                                            for label in category %
+                                        }
+                                        '{{label.sub_category_name}}', { % endfor %
+                                        }
                                     ],
                                     datasets: [{
                                         label: 'orders',
                                         backgroundColor: 'rgb(255, 99, 132)',
                                         borderColor: 'rgb(255, 99, 132)',
-                                        data: [{% for label in quantity %} {{label}}, {% endfor %}],
+                                        data: [{ %
+                                            for label in quantity %
+                                        } {
+                                            {
+                                                label
+                                            }
+                                        }, { % endfor %
+                                        }],
                                     }]
                                 };
                                 var config = {
@@ -313,7 +324,11 @@
                             <script>
                                 // === include 'setup' then 'config' above ===
                                 var data = {
-                                    labels: [{% for label in product_list %}'{{label.product_name}}', {% endfor %}
+                                    labels: [{ %
+                                            for label in product_list %
+                                        }
+                                        '{{label.product_name}}', { % endfor %
+                                        }
                                     ],
                                     datasets: [{
                                         label: 'Stocks',
@@ -335,7 +350,14 @@
                                             'rgb(153, 102, 255)',
                                             'rgb(201, 203, 207)'
                                         ],
-                                        data: [{% for label in product_list %} {{label.unit}}, {% endfor %}],
+                                        data: [{ %
+                                            for label in product_list %
+                                        } {
+                                            {
+                                                label.unit
+                                            }
+                                        }, { % endfor %
+                                        }],
                                     }]
                                 };
                                 var config = {
@@ -542,25 +564,25 @@
         });
     </script>
     <script>
-        var url= '/newadmin/check_validity/'
-             $( document ).ready( function(){
-                console.log('hhhhhh')
-                fetch(url, {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json',
-                    'X-CSRFToken': csrftokens,
-                },
-                body: JSON.stringify('')
-            })
-            .then((response) => {
-                return response.json()
-            })
-            .then((data) => {
-                
-            })
-            })
-        </script>
+        var url = '/newadmin/check_validity/'
+        $(document).ready(function() {
+            console.log('hhhhhh')
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-CSRFToken': csrftokens,
+                    },
+                    body: JSON.stringify('')
+                })
+                .then((response) => {
+                    return response.json()
+                })
+                .then((data) => {
+
+                })
+        })
+    </script>
 </body>
 
 <!-- Mirrored from www.ecommerce-admin.com/demo/page-index-1.html by HTTrack Website Copier/3.x [XR&CO'2014], Fri, 03 Sep 2021 07:00:33 GMT -->
