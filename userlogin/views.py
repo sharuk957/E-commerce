@@ -682,7 +682,7 @@ def wishlist_view(request):
         return render(request,'user/wishlist.html',{'wishlists':data,'wish_count':count,'count':cart_counts})
     else:
         if request.session.has_key('guest_wish'):
-            data = wishlist.objects.filter(guest_token=request.session['guest_wish']).order_by("-id")
+            data = wishlist.objects.filter(guest_wishlist=request.session['guest_wish']).order_by("-id")
             count = data.count()
             return render(request, 'user/wishlist.html',{'wishlists':data,'wish_count':count,'count':cart_counts})
         else:
