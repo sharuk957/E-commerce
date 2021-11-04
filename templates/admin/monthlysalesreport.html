@@ -15,7 +15,7 @@
                     <input type="text" style="margin-top: 22px;" placeholder="Search..." class="form-control">
                 </div>
                 <div class="col-lg-6 col-md-6 me-auto">
-                    <form action="{% url 'monthlyreport' %}" method="POST">
+                    <form action="{% url 'monthly_sales_report' %}" method="POST">
                         {% csrf_token %}
                         <div class="row">
                             <div class="col-lg-5 col-6 col-md-3">
