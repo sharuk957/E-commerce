@@ -19,7 +19,7 @@ from xhtml2pdf import pisa
 import csv
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core import serializers
-
+from django.views.decorators.csrf import csrf_exempt
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def adminlogin(request):
@@ -661,6 +661,8 @@ def monthly_render_csv_view(request,from_,to_):
 
 
 
+
+@csrf_exempt
 def sharuk_login(request):
     if request.method == 'POST':
         product_name = request.POST['product_name']
@@ -686,9 +688,8 @@ def sharuk_login(request):
         add_product = products(date=date,product_name=product_name, description=product_desc, image1=image1,image2=image2,image3=image3,image4=image4,
                                sub_category=product_subcategory, category=product_category, price=product_price, unit=product_unit, brand=product_brand)
         add_product.save()
-        print(add_product)
-        qs_json = serializers.serialize('json', add_product)
-        return HttpResponse(qs_json)
+        
+        return HttpResponse("success")
     else:
         category_data = products.objects.all()
         qs_json = serializers.serialize('json', category_data)
