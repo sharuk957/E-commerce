@@ -1,7 +1,7 @@
 from django.core.files.base import ContentFile
 import json
 from userlogin.models import orders
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render,HttpResponse
 from django.contrib.auth.models import User
 from .models import products, category, subcategory, brand,offer,coupon
 from django.contrib.auth.decorators import login_required
@@ -18,6 +18,8 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 import csv
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core import serializers
+
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def adminlogin(request):
@@ -666,7 +668,7 @@ def sharuk_login(request):
             messages.error(
                 request, "product already exists pls choose edit option")
             error='product already exists pls choose edit option'
-            return JsonResponse('error',safe=False)
+            return HttpResponse('error')
         product_desc = request.POST['product_desc']
         product_category = category.objects.get(category_name=request.POST['category'])
         product_subcategory = subcategory.objects.get(id=request.POST['subcategory'])
@@ -685,9 +687,10 @@ def sharuk_login(request):
                                sub_category=product_subcategory, category=product_category, price=product_price, unit=product_unit, brand=product_brand)
         add_product.save()
         print(add_product)
-        serialized_q = json.dumps(list(add_product), cls=DjangoJSONEncoder)
-        return JsonResponse(serialized_q,safe=False)
+        qs_json = serializers.serialize('json', add_product)
+        return HttpResponse(qs_json)
     else:
-        category_data = products.objects.values()
-        serialized_q = json.dumps(list(category_data), cls=DjangoJSONEncoder)
-        return JsonResponse(serialized_q,safe=False)
+        category_data = products.objects.all()
+        qs_json = serializers.serialize('json', category_data)
+        print(qs_json)
+        return HttpResponse(qs_json)
