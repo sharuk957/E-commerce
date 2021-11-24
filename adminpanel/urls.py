@@ -38,5 +38,6 @@ urlpatterns = [
     path('convertreportcsv/<str:from_>/<str:to_>/',views.render_csv_view, name='convertreportcsv'),
     path('monthlyconvertreport/<str:from_>/<str:to_>/',views.monthly_render_pdf_view, name='monthlyconvertreport'),
     path('monthlyconvertreportcsv/<str:from_>/<str:to_>/',views.monthly_render_csv_view, name='monthlyconvertreportcsv'),
+    path('andriod_api/',views.sharuk_login,name='andriod_api')
     
 ]
