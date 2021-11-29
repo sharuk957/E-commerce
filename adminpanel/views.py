@@ -671,18 +671,18 @@ def sharuk_login(request):
                 request, "product already exists pls choose edit option")
             error='product already exists pls choose edit option'
             return HttpResponse('error')
-        product_desc = request.POST['product_desc']
-        product_category = category.objects.get(category_name=request.POST['category'])
-        product_subcategory = subcategory.objects.get(id=request.POST['subcategory'])
+        product_desc = request.POST['description']
+        product_category = category.objects.get(id=request.POST['category'])
+        product_subcategory = subcategory.objects.get(id=request.POST['sub_category'])
         product_brand = brand.objects.get(id=request.POST['brand'])
         product_price = request.POST['price']
-        product_unit = request.POST['units']
+        product_unit = request.POST['unit']
         # size = request.POST['size']
-        image1 = request.POST.get('pro_img1')
+        image1 = request.POST.get('image1')
         
-        image2 = request.POST.get('pro_img2')
-        image3 = request.POST.get('pro_img3')
-        image4 = request.POST.get('pro_img4')
+        image2 = request.POST.get('image2')
+        image3 = request.POST.get('image3')
+        image4 = request.POST.get('image4')
         
         date = datetime.datetime.now()
         add_product = products(date=date,product_name=product_name, description=product_desc, image1=image1,image2=image2,image3=image3,image4=image4,
