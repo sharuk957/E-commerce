@@ -683,7 +683,8 @@ def sharuk_login(request):
         image2 = request.POST.get('image2')
         image3 = request.POST.get('image3')
         image4 = request.POST.get('image4')
-        
+        print(image1)
+        print(image2)
         date = datetime.datetime.now()
         add_product = products(date=date,product_name=product_name, description=product_desc, image1=image1,image2=image2,image3=image3,image4=image4,
                                sub_category=product_subcategory, category=product_category, price=product_price, unit=product_unit, brand=product_brand)
