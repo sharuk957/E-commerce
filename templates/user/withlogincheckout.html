@@ -5,7 +5,7 @@
         <div class="breadcrumb-content text-center">
             <ul>
                 <li>
-                    <a href="index.html">Home</a>
+                    <a href="">Home</a>
                 </li>
                 <li class="active">
                     checkout</li>
@@ -74,7 +74,7 @@
                         <div class="your-order-wrap gray-bg-4 col-lg-6">
                             <h3>
                                 Address </h3>
-                                <div id="addmsg" style="color:red"></div>
+                            <div id="addmsg" style="color:red"></div>
 
                             <div class="payment-method">
                                 {% for address in address_data %}
@@ -89,7 +89,7 @@
                                     <a href="{% url 'add_address' product %}" class="btn" style="background-color: red; color: white;">add new address</a>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <div class="your-order-wrap gray-bg-4 col-lg-6">
                             <div class="your-order-info-wrap">
@@ -180,7 +180,11 @@
     <script>
         var btn = document.getElementById("couponClick");
         btn.onclick = function() {
-            var total = {{total}}
+            var total = {
+                {
+                    total
+                }
+            }
             var coupon_code = document.getElementById("couponCode").value;
             console.log(coupon_code)
             coupon_check(total, coupon_code)

@@ -676,7 +676,7 @@ def sharuk_login(request):
         product_subcategory = subcategory.objects.get(id=request.POST['sub_category'])
         product_brand = brand.objects.get(id=request.POST['brand'])
         product_price = request.POST['price']
-        product_unit = request.POST['unit']
+        product_unit = request.POST['unit'] 
         # size = request.POST['size']
         image1 = request.POST.get('image1')
         
