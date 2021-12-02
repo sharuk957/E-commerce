@@ -50,9 +50,7 @@
                                                 <button style="border: none;">+</button>
                                             </div>
                                         </div>
-                                        <!-- <div class=" cart-plus-minus choose" data-product={{cart.products_id.id}} data-value1={{cart.quantity}}>
-                                            <input class="cart-plus-minus-box one" type=" text" value=" {{cart.quantity}}">
-                                        </div> -->
+
                                     </td>
                                     <td class="product-subtotal">${{cart.total}}</td>
                                     <td class="product-remove mycart" data-product_id={{cart.products_id.id}} data-action="delete">
@@ -63,49 +61,18 @@
                             </tbody>
                         </table>
                     </div>
-                    <!-- <div class="row">
-                        <div class="col-lg-12">
-                            <div class="cart-shiping-update-wrapper">
-                                <div class="cart-shiping-update">
-                                    <a href="{% url 'product' %}">Continue Shopping</a>
-                                </div>
-                                <div class="cart-clear">
-                                    <button>Update Cart</button>
-                                    <a href="#">Clear Cart</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
+
                 </form>
             </div>
             <div class="col-lg-4 col-md-12">
-                <!-- <div class="col-lg-4 col-md-6">
-                    <div class="discount-code-wrapper">
-                        <div class="title-wrap">
-                            <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
-                        </div>
-                        <div class="discount-code">
-                            <p>Enter your coupon code if you have one.</p>
-                            <form>
-                                <input type="text" required="" name="name">
-                                <button class="cart-btn-2" type="submit">Apply Coupon</button>
-                            </form>
-                        </div>
-                    </div>
-                </div> -->
+
                 <div class="mx-auto">
                     <div class="grand-totall">
                         <div class="title-wrap">
                             <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
                         </div>
                         <h5>Total products <span>{{totalproduct}}</span></h5>
-                        <!-- <div class="total-shipping">
-                            <h5>Total shipping</h5>
-                            <ul>
-                                <li><input type="checkbox"> Standard <span>$20.00</span></li>
-                                <li><input type="checkbox"> Express <span>$30.00</span></li>
-                            </ul>
-                        </div> -->
+
                         <h4 class="grand-totall-title">Grand Total <span>${{totalprice}}</span></h4>
                         <a href="{% url 'checkout' -1 %}">Proceed to Checkout</a>
                     </div>

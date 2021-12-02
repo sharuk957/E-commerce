@@ -3,9 +3,7 @@
 
     <div class="content-header">
         <h2 class="content-title">Users list</h2>
-        <!-- <div>
-            <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
-        </div> -->
+
     </div>
 
     <div class="card mb-4">
@@ -14,21 +12,7 @@
                 <div class="col-lg-4 col-md-6 me-auto">
                     <input type="text" placeholder="Search..." class="form-control">
                 </div>
-                <!-- <div class="col-lg-2 col-6 col-md-3">
-                    <select class="form-select">
-                        <option>Status</option>
-                        <option>Active</option>
-                        <option>Disabled</option>
-                        <option>Show all</option>
-                    </select>
-                </div>
-                <div class="col-lg-2 col-6 col-md-3">
-                    <select class="form-select">
-                        <option>Show 20</option>
-                        <option>Show 30</option>
-                        <option>Show 40</option>
-                    </select>
-                </div> -->
+
             </div>
         </header>
         <!-- card-header end// -->
@@ -53,21 +37,12 @@
                             <td>{{user_data.first_name}}</td>
                             <td>{{user_data.last_name}}</td>
                             <td>{{user_data.email}}</td>
-                            <!-- <td><span class="badge rounded-pill alert-warning">Pending</span></td>
-                        <td>03.12.2020</td> -->
+
                             <td class="text-end">
                                 {% if user_data.is_active %}
                                 <a class="text-danger" href="{% url 'userblock' user_data.id %}" style="font-size: 30px;"><i class="fas fa-ban"></i></a> {% else %}
                                 <a class="text-danger" href="{% url 'userunblock' user_data.id %}" style="font-size: 30px;"><i class="far fa-circle"></i></a> {% endif %}
-                                <!-- <div class="dropdown">
-                                <a href="#" data-bs-toggle="dropdown" class="btn btn-light"> <i
-                                        class="material-icons md-more_horiz"></i> </a>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#">View detail</a>
-                                    <a class="dropdown-item" href="#">Edit info</a>
-                                    <a class="dropdown-item text-danger" href="#">Delete</a>
-                                </div>
-                            </div> dropdown //end -->
+
                             </td>
                         </tr>
                         {% endfor %}

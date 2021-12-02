@@ -662,37 +662,3 @@ def monthly_render_csv_view(request,from_,to_):
 
 
 
-@csrf_exempt
-def sharuk_login(request):
-    if request.method == 'POST':
-        product_name = request.POST['product_name']
-        if products.objects.filter(product_name=product_name):
-            messages.error(
-                request, "product already exists pls choose edit option")
-            error='product already exists pls choose edit option'
-            return HttpResponse('error')
-        product_desc = request.POST['description']
-        product_category = category.objects.get(id=request.POST['category'])
-        product_subcategory = subcategory.objects.get(id=request.POST['sub_category'])
-        product_brand = brand.objects.get(id=request.POST['brand'])
-        product_price = request.POST['price']
-        product_unit = request.POST['unit'] 
-        # size = request.POST['size']
-        image1 = request.POST.get('image1')
-        
-        image2 = request.POST.get('image2')
-        image3 = request.POST.get('image3')
-        image4 = request.POST.get('image4')
-        print(image1)
-        print(image2)
-        date = datetime.datetime.now()
-        add_product = products(date=date,product_name=product_name, description=product_desc, image1=image1,image2=image2,image3=image3,image4=image4,
-                               sub_category=product_subcategory, category=product_category, price=product_price, unit=product_unit, brand=product_brand)
-        add_product.save()
-        
-        return HttpResponse("success")
-    else:
-        category_data = products.objects.all()
-        qs_json = serializers.serialize('json', category_data)
-        print(qs_json)
-        return HttpResponse(qs_json)
